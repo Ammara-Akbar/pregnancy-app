@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../bride/bride_plan_overview_screen.dart';
+import '../new_mother/new_mother_plan_overview_screen.dart';
+import '../pregnant/pregnant_plan_overview_screen.dart';
 
 class JourneyOption {
   const JourneyOption({
@@ -82,6 +84,20 @@ class _JourneySelectionScreenState extends State<JourneySelectionScreen> {
     if (_selectedId == 'bride') {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => const BridePlanOverviewScreen()),
+      );
+      return;
+    }
+
+    if (_selectedId == 'pregnant') {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const PregnantPlanOverviewScreen()),
+      );
+      return;
+    }
+
+    if (_selectedId == 'new_mother') {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const NewMotherPlanOverviewScreen()),
       );
       return;
     }

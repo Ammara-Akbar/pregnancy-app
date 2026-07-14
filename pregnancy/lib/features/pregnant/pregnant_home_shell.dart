@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
-import 'bride_community_screen.dart';
-import 'bride_home_screen.dart';
-import 'bride_my_plan_screen.dart';
-import 'bride_profile_screen.dart';
-import 'bride_reports_screen.dart';
+import 'pregnant_community_screen.dart';
+import 'pregnant_home_screen.dart';
+import 'pregnant_journey_screen.dart';
+import 'pregnant_profile_screen.dart';
+import 'pregnant_tools_screen.dart';
 
-class BrideHomeShell extends StatefulWidget {
-  const BrideHomeShell({super.key, this.userName = 'Ayesha'});
+class PregnantHomeShell extends StatefulWidget {
+  const PregnantHomeShell({
+    super.key,
+    this.userName = 'Ayesha',
+    this.weeksPregnant = 12,
+  });
 
   final String userName;
+  final int weeksPregnant;
 
   @override
-  State<BrideHomeShell> createState() => _BrideHomeShellState();
+  State<PregnantHomeShell> createState() => _PregnantHomeShellState();
 }
 
-class _BrideHomeShellState extends State<BrideHomeShell> {
+class _PregnantHomeShellState extends State<PregnantHomeShell> {
   int _index = 0;
 
   @override
@@ -26,11 +31,20 @@ class _BrideHomeShellState extends State<BrideHomeShell> {
         : '${widget.userName} Khan';
 
     final pages = [
-      BrideHomeScreen(userName: widget.userName),
-      BrideMyPlanScreen(onBack: () => setState(() => _index = 0)),
-      const BrideCommunityScreen(),
-      const BrideReportsScreen(),
-      BrideProfileScreen(userName: fullName),
+      PregnantHomeScreen(
+        userName: widget.userName,
+        weeksPregnant: widget.weeksPregnant,
+      ),
+      PregnantJourneyScreen(
+        weeksPregnant: widget.weeksPregnant,
+        userName: widget.userName,
+      ),
+      const PregnantToolsScreen(),
+      const PregnantCommunityScreen(),
+      PregnantProfileScreen(
+        userName: fullName,
+        weeksPregnant: widget.weeksPregnant,
+      ),
     ];
 
     return Scaffold(
@@ -50,7 +64,7 @@ class _BrideHomeShellState extends State<BrideHomeShell> {
         child: SafeArea(
           top: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -61,20 +75,20 @@ class _BrideHomeShellState extends State<BrideHomeShell> {
                   onTap: () => setState(() => _index = 0),
                 ),
                 _NavItem(
-                  icon: Icons.calendar_month_outlined,
-                  label: 'Plan',
+                  icon: Icons.favorite_outline,
+                  label: 'Journey',
                   selected: _index == 1,
                   onTap: () => setState(() => _index = 1),
                 ),
                 _NavItem(
-                  icon: Icons.groups_outlined,
-                  label: 'Community',
+                  icon: Icons.local_florist_outlined,
+                  label: 'Tools',
                   selected: _index == 2,
                   onTap: () => setState(() => _index = 2),
                 ),
                 _NavItem(
-                  icon: Icons.bar_chart_rounded,
-                  label: 'Reports',
+                  icon: Icons.forum_outlined,
+                  label: 'Community',
                   selected: _index == 3,
                   onTap: () => setState(() => _index = 3),
                 ),
