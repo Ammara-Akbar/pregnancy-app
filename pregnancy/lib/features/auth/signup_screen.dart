@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/auth_widgets.dart';
+import '../journey/journey_selection_screen.dart';
 import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -41,8 +42,8 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Account created successfully')),
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const JourneySelectionScreen()),
     );
   }
 
