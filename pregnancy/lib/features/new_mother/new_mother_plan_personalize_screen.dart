@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import 'new_mother_home_shell.dart';
 
 class NewMotherPlanPersonalizeScreen extends StatefulWidget {
   const NewMotherPlanPersonalizeScreen({super.key});
@@ -150,12 +151,17 @@ class _NewMotherPlanPersonalizeScreenState
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'New Mother plan ready · Mood: ${_moods[_moodIndex].$2}',
+    final name = _nameController.text.trim().split(' ').first;
+    final days = DateTime.now().difference(_deliveryDate!).inDays.clamp(1, 365);
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (_) => NewMotherHomeShell(
+          userName: name,
+          daysPostpartum: days,
         ),
       ),
+      (route) => false,
     );
   }
 
