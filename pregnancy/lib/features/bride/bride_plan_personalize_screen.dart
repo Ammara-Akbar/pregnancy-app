@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/theme/app_colors.dart';
+import 'bride_home_shell.dart';
 
 class BridePlanPersonalizeScreen extends StatefulWidget {
   const BridePlanPersonalizeScreen({super.key});
@@ -213,8 +214,12 @@ class _BridePlanPersonalizeScreenState
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Your Bride-to-be plan is ready')),
+    final name = _nameController.text.trim().split(' ').first;
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (_) => BrideHomeShell(userName: name),
+      ),
+      (route) => false,
     );
   }
 
