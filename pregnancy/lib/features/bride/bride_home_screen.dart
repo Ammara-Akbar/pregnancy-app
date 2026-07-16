@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../core/content/regional_content.dart';
+import '../../core/preferences/user_preferences.dart';
 import '../../core/theme/app_colors.dart';
+import 'bride_article_detail_screen.dart';
+import 'bride_articles_screen.dart';
+import 'bride_diet_nutrition_screen.dart';
+import 'bride_wellness_screen.dart';
 
 class BrideHomeScreen extends StatefulWidget {
   const BrideHomeScreen({super.key, required this.userName});
@@ -83,10 +89,19 @@ class _BrideHomeScreenState extends State<BrideHomeScreen> {
                   ),
                   const SizedBox(height: 16),
                   const _DailyTipCard(),
+                  const SizedBox(height: 12),
+                  const _WellnessHubCard(),
                   const SizedBox(height: 22),
-                  const _SectionHeader(
+                  _SectionHeader(
                     title: 'Diet & Nutrition',
                     action: 'See all',
+                    onAction: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const BrideDietNutritionScreen(),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 12),
                   const _DietPlanCard(),
@@ -99,9 +114,16 @@ class _BrideHomeScreenState extends State<BrideHomeScreen> {
                   const SizedBox(height: 12),
                   const _WeeklyProgressRow(),
                   const SizedBox(height: 22),
-                  const _SectionHeader(
+                  _SectionHeader(
                     title: 'Articles for You',
                     action: 'See all',
+                    onAction: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const BrideArticlesScreen(),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 12),
                   const _ArticleCard(),
@@ -459,11 +481,13 @@ class _SectionHeader extends StatelessWidget {
     required this.title,
     required this.action,
     this.actionMuted = false,
+    this.onAction,
   });
 
   final String title;
   final String action;
   final bool actionMuted;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
@@ -478,12 +502,15 @@ class _SectionHeader extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        Text(
-          action,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: actionMuted ? AppColors.textMuted : AppColors.magenta,
+        GestureDetector(
+          onTap: onAction,
+          child: Text(
+            action,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: actionMuted ? AppColors.textMuted : AppColors.magenta,
+            ),
           ),
         ),
       ],
@@ -494,75 +521,81 @@ class _SectionHeader extends StatelessWidget {
 class _DietPlanCard extends StatelessWidget {
   const _DietPlanCard();
 
-  static const _meals = [
-    ('Breakfast', 'Oats with milk, almonds & dates', Color(0xFFFFB74D)),
-    ('Lunch', 'Roti, daal, spinach & yogurt', Color(0xFF81C784)),
-    ('Evening Snack', 'Fruit chaat or roasted chana', Color(0xFFFF8A65)),
-    ('Dinner', 'Grilled chicken with veggies', Color(0xFF64B5F6)),
+  static const _colors = [
+    Color(0xFFFFB74D),
+    Color(0xFF81C784),
+    Color(0xFFFF8A65),
+    Color(0xFF64B5F6),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
+    return AnimatedBuilder(
+      animation: UserPreferences.instance,
+      builder: (context, _) {
+        final meals = RegionalContent.brideHomeMeals();
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        children: [
-          for (var i = 0; i < _meals.length; i++) ...[
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _meals[i].$1,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF2C3A55),
-                        ),
+          child: Column(
+            children: [
+              for (var i = 0; i < meals.length; i++) ...[
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            meals[i].$1,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF2C3A55),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            meals[i].$2,
+                            style: const TextStyle(
+                              fontSize: 12.5,
+                              color: AppColors.textMuted,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        _meals[i].$2,
-                        style: const TextStyle(
-                          fontSize: 12.5,
-                          color: AppColors.textMuted,
-                        ),
+                    ),
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _colors[i].withValues(alpha: 0.2),
                       ),
-                    ],
-                  ),
+                      child: Icon(
+                        Icons.restaurant_rounded,
+                        color: _colors[i],
+                        size: 22,
+                      ),
+                    ),
+                  ],
                 ),
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _meals[i].$3.withValues(alpha: 0.2),
-                  ),
-                  child: Icon(
-                    Icons.restaurant_rounded,
-                    color: _meals[i].$3,
-                    size: 22,
-                  ),
-                ),
+                if (i < meals.length - 1) const SizedBox(height: 14),
               ],
-            ),
-            if (i < _meals.length - 1) const SizedBox(height: 14),
-          ],
-        ],
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -677,61 +710,134 @@ class _ProgressMiniCard extends StatelessWidget {
   }
 }
 
+class _WellnessHubCard extends StatelessWidget {
+  const _WellnessHubCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const BrideWellnessScreen()),
+          );
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFF0E4EA)),
+          ),
+          child: const Row(
+            children: [
+              Icon(Icons.spa_outlined, color: AppColors.magenta, size: 22),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Bride Wellness Hub',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF2C3A55),
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      'Fitness, glow care, stress tips & more',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded, color: AppColors.skipGrey),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _ArticleCard extends StatelessWidget {
   const _ArticleCard();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.white,
+    final article = brideArticles.first;
+
+    return Material(
+      color: AppColors.white,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => BrideArticleDetailScreen(article: article),
+            ),
+          );
+        },
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '10 Tips for a Healthy Pre-Marriage Lifestyle',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF2C3A55),
-                    height: 1.3,
-                  ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      article.title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF2C3A55),
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      article.readTime,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 6),
-                Text(
-                  '5 min read',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textMuted,
-                  ),
+              ),
+              const SizedBox(width: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  article.imageAsset,
+                  width: 72,
+                  height: 64,
+                  fit: BoxFit.cover,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              'assets/images/journey_bride.png',
-              width: 72,
-              height: 64,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

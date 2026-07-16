@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/content_region_picker.dart';
 import '../subscription/choose_plan_screen.dart';
 
 class JourneyOption {
@@ -160,6 +161,12 @@ class _JourneySelectionScreenState extends State<JourneySelectionScreen> {
                               ],
                             );
                           },
+                        ),
+                        const SizedBox(height: 22),
+                        const ContentRegionPicker(
+                          title: 'Who is this experience for?',
+                          subtitle:
+                              'Pick Desi or International guidance so meals, tips, and pricing feel right for you.',
                         ),
                       ],
                     ),

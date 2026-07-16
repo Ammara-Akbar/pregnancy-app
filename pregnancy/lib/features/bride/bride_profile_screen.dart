@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/content_region_picker.dart';
 
 class BrideProfileScreen extends StatelessWidget {
   const BrideProfileScreen({super.key, this.userName = 'Ayesha Khan'});
@@ -200,6 +201,12 @@ class BrideProfileScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 16),
+              const ContentRegionPicker(
+                title: 'Content style',
+                subtitle:
+                    'Switch between Desi and International meals, tips, and pricing anytime.',
               ),
               const SizedBox(height: 16),
               _MenuGroup(

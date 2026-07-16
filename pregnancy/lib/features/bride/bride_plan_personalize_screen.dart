@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/content_region_picker.dart';
 import '../subscription/review_confirm_screen.dart';
 import '../subscription/subscription_plan.dart';
 
@@ -288,6 +289,8 @@ class _BridePlanPersonalizeScreenState
                       ),
                     ),
                     const SizedBox(height: 28),
+                    const ContentRegionPicker(compact: true),
+                    const SizedBox(height: 18),
                     _LabeledField(
                       label: 'Your Name',
                       child: TextField(

@@ -28,7 +28,7 @@ class BridePlanOverviewScreen extends StatelessWidget {
     (
       Icons.restaurant_rounded,
       'Diet & Nutrition Plans',
-      'Desi diet plans to build a healthy body',
+      'Desi & international diet options to build a healthy body',
     ),
     (
       Icons.self_improvement_rounded,

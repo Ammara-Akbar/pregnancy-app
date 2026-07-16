@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/preferences/user_preferences.dart';
 import '../../core/theme/app_colors.dart';
 import '../bride/bride_plan_overview_screen.dart';
 import '../miscarriage/miscarriage_plan_overview_screen.dart';
@@ -92,6 +93,13 @@ class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: UserPreferences.instance,
+      builder: (context, _) => _buildBody(context),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
     final bottom = MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
@@ -402,34 +410,12 @@ class _PlanCard extends StatelessWidget {
                           ),
                         )
                       else
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              const TextSpan(
-                                text: 'PKR ',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF2C3A55),
-                                ),
-                              ),
-                              TextSpan(
-                                text: price,
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800,
-                                  color: Color(0xFF2C3A55),
-                                ),
-                              ),
-                              TextSpan(
-                                text: ' / $period',
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.textMuted,
-                                ),
-                              ),
-                            ],
+                        Text(
+                          '${UserPreferences.instance.region.formatMoney(price)} / $period',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF2C3A55),
                           ),
                         ),
                     ],
