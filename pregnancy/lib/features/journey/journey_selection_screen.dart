@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../bride/bride_plan_overview_screen.dart';
-import '../miscarriage/miscarriage_plan_overview_screen.dart';
+import '../miscarriage/miscarriage_choose_plan_screen.dart';
 import '../new_mother/new_mother_plan_overview_screen.dart';
 import '../pregnant/pregnant_plan_overview_screen.dart';
 
@@ -24,6 +24,8 @@ class JourneyOption {
 
 class JourneySelectionScreen extends StatefulWidget {
   const JourneySelectionScreen({super.key});
+
+  static const routeName = 'journey_selection';
 
   @override
   State<JourneySelectionScreen> createState() => _JourneySelectionScreenState();
@@ -106,7 +108,10 @@ class _JourneySelectionScreenState extends State<JourneySelectionScreen> {
     if (_selectedId == 'miscarriage_support') {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => const MiscarriagePlanOverviewScreen(),
+          settings: const RouteSettings(
+            name: MiscarriageChoosePlanScreen.routeName,
+          ),
+          builder: (_) => const MiscarriageChoosePlanScreen(),
         ),
       );
       return;

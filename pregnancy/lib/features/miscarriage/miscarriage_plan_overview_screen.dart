@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import 'miscarriage_plan_personalize_screen.dart';
+import 'miscarriage_subscription_plan.dart';
 
 class MiscarriagePlanOverviewScreen extends StatelessWidget {
-  const MiscarriagePlanOverviewScreen({super.key});
+  const MiscarriagePlanOverviewScreen({
+    super.key,
+    this.selectedPlan,
+    this.yearly = false,
+  });
+
+  final MiscarriageSubscriptionPlan? selectedPlan;
+  final bool yearly;
 
   static const _features = [
     (
@@ -205,8 +213,11 @@ class MiscarriagePlanOverviewScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const MiscarriagePlanPersonalizeScreen(),
+                          builder: (_) => MiscarriagePlanPersonalizeScreen(
+                            selectedPlan: selectedPlan ??
+                                MiscarriageSubscriptionPlan.all.first,
+                            yearly: yearly,
+                          ),
                         ),
                       );
                     },

@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
-import 'miscarriage_home_shell.dart';
+import 'miscarriage_review_confirm_screen.dart';
+import 'miscarriage_subscription_plan.dart';
 
 class MiscarriagePlanPersonalizeScreen extends StatefulWidget {
-  const MiscarriagePlanPersonalizeScreen({super.key});
+  const MiscarriagePlanPersonalizeScreen({
+    super.key,
+    required this.selectedPlan,
+    this.yearly = false,
+  });
+
+  final MiscarriageSubscriptionPlan selectedPlan;
+  final bool yearly;
 
   @override
   State<MiscarriagePlanPersonalizeScreen> createState() =>
@@ -160,11 +168,14 @@ class _MiscarriagePlanPersonalizeScreenState
     }
 
     final name = _nameController.text.trim().split(' ').first;
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => MiscarriageHomeShell(userName: name),
+        builder: (_) => MiscarriageReviewConfirmScreen(
+          selectedPlan: widget.selectedPlan,
+          yearly: widget.yearly,
+          userName: name,
+        ),
       ),
-      (route) => false,
     );
   }
 

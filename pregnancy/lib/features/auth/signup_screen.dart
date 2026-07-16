@@ -43,7 +43,10 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const JourneySelectionScreen()),
+      MaterialPageRoute(
+        settings: const RouteSettings(name: JourneySelectionScreen.routeName),
+        builder: (_) => const JourneySelectionScreen(),
+      ),
     );
   }
 
