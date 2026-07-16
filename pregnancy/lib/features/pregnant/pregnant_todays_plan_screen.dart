@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import 'pregnant_diet_screen.dart';
+import 'pregnant_trimester_diet.dart';
 
 class PregnantTodaysPlanScreen extends StatefulWidget {
-  const PregnantTodaysPlanScreen({super.key});
+  const PregnantTodaysPlanScreen({
+    super.key,
+    this.initialTab = 0,
+    this.weeksPregnant = 12,
+  });
+
+  final int initialTab;
+  final int weeksPregnant;
 
   @override
   State<PregnantTodaysPlanScreen> createState() =>
@@ -11,7 +20,7 @@ class PregnantTodaysPlanScreen extends StatefulWidget {
 }
 
 class _PregnantTodaysPlanScreenState extends State<PregnantTodaysPlanScreen> {
-  int _tab = 0;
+  late int _tab = widget.initialTab.clamp(0, 3);
   final _tabs = const ['Tasks', 'Diet', 'Exercise', 'Tips'];
 
   late final List<_TaskItem> _tasks = [
@@ -37,7 +46,7 @@ class _PregnantTodaysPlanScreenState extends State<PregnantTodaysPlanScreen> {
               child: Row(
                 children: [
                   IconButton(
-                    onPressed: () => Navigator.of(context).maybePop(),
+                    onPressed: () => Navigator.of(context).pop(_done),
                     icon: const Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 18,
@@ -304,6 +313,80 @@ class _PregnantTodaysPlanScreenState extends State<PregnantTodaysPlanScreen> {
                           ),
                         ],
                       ),
+                    ),
+                  ] else if (_tab == 1) ...[
+                    Builder(
+                      builder: (context) {
+                        final plan = PregnantTrimesterDiet.forWeek(
+                          widget.weeksPregnant,
+                        );
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${plan.label} meals',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF2C3A55),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              plan.focusTitle,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            for (final meal in plan.meals)
+                              Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(bottom: 10),
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      meal.$2,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.magenta,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      meal.$3,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: AppColors.textMuted,
+                                        height: 1.35,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => PregnantDietScreen(
+                                      weeksPregnant: widget.weeksPregnant,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: const Text('See full trimester diet guide'),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ] else
                     Padding(

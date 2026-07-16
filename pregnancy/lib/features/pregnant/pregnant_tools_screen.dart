@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import 'pregnant_diet_screen.dart';
+import 'pregnant_reminders_screen.dart';
+import 'pregnant_symptoms_screen.dart';
 
 class PregnantToolsScreen extends StatelessWidget {
-  const PregnantToolsScreen({super.key});
+  const PregnantToolsScreen({super.key, this.weeksPregnant = 12});
+
+  final int weeksPregnant;
 
   static const _essentials = [
     (Icons.directions_walk_rounded, 'Kick Counter', Color(0xFF4CAF7A)),
@@ -74,7 +79,24 @@ class PregnantToolsScreen extends StatelessWidget {
                 elevation: 0,
                 shadowColor: Colors.black12,
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    final title = item.$2;
+                    if (title == 'Symptom Checker') {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => PregnantSymptomsScreen(
+                            weeksPregnant: weeksPregnant,
+                          ),
+                        ),
+                      );
+                    } else if (title == 'Medicine Reminder') {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const PregnantRemindersScreen(),
+                        ),
+                      );
+                    }
+                  },
                   borderRadius: BorderRadius.circular(18),
                   child: Container(
                     decoration: BoxDecoration(
@@ -168,7 +190,17 @@ class PregnantToolsScreen extends StatelessWidget {
                       Icons.chevron_right_rounded,
                       color: AppColors.skipGrey,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      if (_guides[i].$2 == 'Food & Nutrition') {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => PregnantDietScreen(
+                              weeksPregnant: weeksPregnant,
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   if (i < _guides.length - 1)
                     const Divider(

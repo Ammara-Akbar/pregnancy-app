@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import 'pregnant_baby_size.dart';
 
 class PregnantJourneyScreen extends StatelessWidget {
   const PregnantJourneyScreen({
@@ -13,6 +14,8 @@ class PregnantJourneyScreen extends StatelessWidget {
   final int weeksPregnant;
   final String userName;
   final VoidCallback? onBack;
+
+  PregnantBabySize get _babySize => PregnantBabySize.forWeek(weeksPregnant);
 
   String get _trimester {
     if (weeksPregnant <= 13) return '1st Trimester';
@@ -148,7 +151,7 @@ class PregnantJourneyScreen extends StatelessWidget {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: Image.asset(
-                    'assets/images/fetus_week12.png',
+                    PregnantBabySize.fetusAssetForWeek(weeksPregnant),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -217,9 +220,9 @@ class PregnantJourneyScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Text(
-                        'Your baby is the size of a plum. The limbs and fingers are developing.',
-                        style: TextStyle(
+                      Text(
+                        _babySize.blurb,
+                        style: const TextStyle(
                           fontSize: 12.5,
                           color: AppColors.textMuted,
                           height: 1.4,
@@ -232,7 +235,7 @@ class PregnantJourneyScreen extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.asset(
-                    'assets/images/baby_size_plum.png',
+                    _babySize.imageAsset,
                     width: 64,
                     height: 64,
                     fit: BoxFit.cover,

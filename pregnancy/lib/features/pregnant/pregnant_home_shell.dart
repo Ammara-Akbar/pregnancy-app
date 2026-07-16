@@ -39,7 +39,7 @@ class _PregnantHomeShellState extends State<PregnantHomeShell> {
         weeksPregnant: widget.weeksPregnant,
         userName: widget.userName,
       ),
-      const PregnantToolsScreen(),
+      PregnantToolsScreen(weeksPregnant: widget.weeksPregnant),
       const PregnantCommunityScreen(),
       PregnantProfileScreen(
         userName: fullName,
