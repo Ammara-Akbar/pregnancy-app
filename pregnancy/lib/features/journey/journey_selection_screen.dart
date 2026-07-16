@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../bride/bride_plan_overview_screen.dart';
+import '../miscarriage/miscarriage_home_shell.dart';
 import '../new_mother/new_mother_plan_overview_screen.dart';
 import '../pregnant/pregnant_plan_overview_screen.dart';
 
@@ -68,10 +69,10 @@ class _JourneySelectionScreenState extends State<JourneySelectionScreen> {
       imageAsset: 'assets/images/journey_mother_in_law.png',
     ),
     JourneyOption(
-      id: 'womens_health',
-      title: "Women's Health",
-      description: 'Take charge of your health and well-being.',
-      icon: Icons.add_box_outlined,
+      id: 'miscarriage_support',
+      title: 'Miscarriage Support',
+      description: 'Gentle care and guidance for healing and recovery.',
+      icon: Icons.favorite_outline,
       imageAsset: 'assets/images/journey_womens_health.png',
     ),
   ];
@@ -98,6 +99,14 @@ class _JourneySelectionScreenState extends State<JourneySelectionScreen> {
     if (_selectedId == 'new_mother') {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => const NewMotherPlanOverviewScreen()),
+      );
+      return;
+    }
+
+    if (_selectedId == 'miscarriage_support') {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const MiscarriageHomeShell()),
+        (route) => false,
       );
       return;
     }
