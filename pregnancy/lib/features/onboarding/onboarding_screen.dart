@@ -30,18 +30,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       subtitle: 'Log symptoms, appointments, and baby kicks in one calm place.',
       showOrbit: false,
     ),
-    _OnboardingPageData(
-      titleTop: 'Guided care plans,',
-      titleBottom: 'made just for you',
-      subtitle: 'Personalized tips and reminders tailored to your trimester.',
-      showOrbit: false,
-    ),
-    _OnboardingPageData(
-      titleTop: 'Your village,',
-      titleBottom: 'always close by',
-      subtitle: 'Invite family and share updates with people who matter most.',
-      showOrbit: false,
-    ),
   ];
 
   @override
@@ -342,7 +330,7 @@ class _FeatureOrbit extends StatelessWidget {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: Image.asset(
-                    'assets/images/pregnant_woman.png',
+                    'assets/images/pregnant_body_week.png',
                     fit: BoxFit.cover,
                     alignment: const Alignment(0, -0.2),
                   ),
