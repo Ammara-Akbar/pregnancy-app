@@ -2,10 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/theme/app_colors.dart';
-import 'bride_home_shell.dart';
+import '../subscription/review_confirm_screen.dart';
+import '../subscription/subscription_plan.dart';
 
 class BridePlanPersonalizeScreen extends StatefulWidget {
-  const BridePlanPersonalizeScreen({super.key});
+  const BridePlanPersonalizeScreen({
+    super.key,
+    required this.selectedPlan,
+    this.yearly = false,
+  });
+
+  final SubscriptionPlan selectedPlan;
+  final bool yearly;
 
   @override
   State<BridePlanPersonalizeScreen> createState() =>
@@ -215,11 +223,15 @@ class _BridePlanPersonalizeScreenState
     }
 
     final name = _nameController.text.trim().split(' ').first;
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => BrideHomeShell(userName: name),
+        builder: (_) => ReviewConfirmScreen(
+          journeyId: 'bride',
+          selectedPlan: widget.selectedPlan,
+          yearly: widget.yearly,
+          userName: name,
+        ),
       ),
-      (route) => false,
     );
   }
 

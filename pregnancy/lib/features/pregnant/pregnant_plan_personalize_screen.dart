@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
-import 'pregnant_home_shell.dart';
+import '../subscription/review_confirm_screen.dart';
+import '../subscription/subscription_plan.dart';
 
 class PregnantPlanPersonalizeScreen extends StatefulWidget {
-  const PregnantPlanPersonalizeScreen({super.key});
+  const PregnantPlanPersonalizeScreen({
+    super.key,
+    required this.selectedPlan,
+    this.yearly = false,
+  });
+
+  final SubscriptionPlan selectedPlan;
+  final bool yearly;
 
   @override
   State<PregnantPlanPersonalizeScreen> createState() =>
@@ -226,14 +234,16 @@ class _PregnantPlanPersonalizeScreenState
     }
 
     final name = _nameController.text.trim().split(' ').first;
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => PregnantHomeShell(
+        builder: (_) => ReviewConfirmScreen(
+          journeyId: 'pregnant',
+          selectedPlan: widget.selectedPlan,
+          yearly: widget.yearly,
           userName: name,
           weeksPregnant: _weeks,
         ),
       ),
-      (route) => false,
     );
   }
 

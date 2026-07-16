@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../subscription/subscription_plan.dart';
 import 'pregnant_plan_personalize_screen.dart';
 
 class PregnantPlanOverviewScreen extends StatelessWidget {
-  const PregnantPlanOverviewScreen({super.key});
+  const PregnantPlanOverviewScreen({
+    super.key,
+    this.selectedPlan,
+    this.yearly = false,
+  });
+
+  final SubscriptionPlan? selectedPlan;
+  final bool yearly;
 
   static const _features = [
     (
@@ -197,7 +205,11 @@ class PregnantPlanOverviewScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => const PregnantPlanPersonalizeScreen(),
+                          builder: (_) => PregnantPlanPersonalizeScreen(
+                            selectedPlan: selectedPlan ??
+                                SubscriptionPlan.forJourney('pregnant').first,
+                            yearly: yearly,
+                          ),
                         ),
                       );
                     },

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
-import 'miscarriage_review_confirm_screen.dart';
-import 'miscarriage_subscription_plan.dart';
+import '../subscription/review_confirm_screen.dart';
+import '../subscription/subscription_plan.dart';
 
 class MiscarriagePlanPersonalizeScreen extends StatefulWidget {
   const MiscarriagePlanPersonalizeScreen({
@@ -11,7 +11,7 @@ class MiscarriagePlanPersonalizeScreen extends StatefulWidget {
     this.yearly = false,
   });
 
-  final MiscarriageSubscriptionPlan selectedPlan;
+  final SubscriptionPlan selectedPlan;
   final bool yearly;
 
   @override
@@ -170,7 +170,8 @@ class _MiscarriagePlanPersonalizeScreenState
     final name = _nameController.text.trim().split(' ').first;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => MiscarriageReviewConfirmScreen(
+        builder: (_) => ReviewConfirmScreen(
+          journeyId: 'miscarriage_support',
           selectedPlan: widget.selectedPlan,
           yearly: widget.yearly,
           userName: name,

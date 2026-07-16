@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../subscription/subscription_plan.dart';
 import 'new_mother_plan_personalize_screen.dart';
 
 class NewMotherPlanOverviewScreen extends StatelessWidget {
-  const NewMotherPlanOverviewScreen({super.key});
+  const NewMotherPlanOverviewScreen({
+    super.key,
+    this.selectedPlan,
+    this.yearly = false,
+  });
+
+  final SubscriptionPlan? selectedPlan;
+  final bool yearly;
 
   static const _features = [
     (
@@ -195,8 +203,11 @@ class NewMotherPlanOverviewScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const NewMotherPlanPersonalizeScreen(),
+                          builder: (_) => NewMotherPlanPersonalizeScreen(
+                            selectedPlan: selectedPlan ??
+                                SubscriptionPlan.forJourney('new_mother').first,
+                            yearly: yearly,
+                          ),
                         ),
                       );
                     },

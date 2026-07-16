@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
-import 'new_mother_home_shell.dart';
+import '../subscription/review_confirm_screen.dart';
+import '../subscription/subscription_plan.dart';
 
 class NewMotherPlanPersonalizeScreen extends StatefulWidget {
-  const NewMotherPlanPersonalizeScreen({super.key});
+  const NewMotherPlanPersonalizeScreen({
+    super.key,
+    required this.selectedPlan,
+    this.yearly = false,
+  });
+
+  final SubscriptionPlan selectedPlan;
+  final bool yearly;
 
   @override
   State<NewMotherPlanPersonalizeScreen> createState() =>
@@ -154,14 +162,16 @@ class _NewMotherPlanPersonalizeScreenState
     final name = _nameController.text.trim().split(' ').first;
     final days = DateTime.now().difference(_deliveryDate!).inDays.clamp(1, 365);
 
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => NewMotherHomeShell(
+        builder: (_) => ReviewConfirmScreen(
+          journeyId: 'new_mother',
+          selectedPlan: widget.selectedPlan,
+          yearly: widget.yearly,
           userName: name,
           daysPostpartum: days,
         ),
       ),
-      (route) => false,
     );
   }
 

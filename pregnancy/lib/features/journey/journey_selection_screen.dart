@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
-import '../bride/bride_plan_overview_screen.dart';
-import '../miscarriage/miscarriage_choose_plan_screen.dart';
-import '../new_mother/new_mother_plan_overview_screen.dart';
-import '../pregnant/pregnant_plan_overview_screen.dart';
+import '../subscription/choose_plan_screen.dart';
 
 class JourneyOption {
   const JourneyOption({
@@ -84,42 +81,13 @@ class _JourneySelectionScreenState extends State<JourneySelectionScreen> {
   }
 
   void _onNext() {
-    if (_selectedId == 'bride') {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const BridePlanOverviewScreen()),
-      );
-      return;
-    }
+    if (_selectedId == null) return;
 
-    if (_selectedId == 'pregnant') {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const PregnantPlanOverviewScreen()),
-      );
-      return;
-    }
-
-    if (_selectedId == 'new_mother') {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const NewMotherPlanOverviewScreen()),
-      );
-      return;
-    }
-
-    if (_selectedId == 'miscarriage_support') {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          settings: const RouteSettings(
-            name: MiscarriageChoosePlanScreen.routeName,
-          ),
-          builder: (_) => const MiscarriageChoosePlanScreen(),
-        ),
-      );
-      return;
-    }
-
-    final selected = _options.firstWhere((o) => o.id == _selectedId);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Continuing as ${selected.title}')),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        settings: const RouteSettings(name: ChoosePlanScreen.routeName),
+        builder: (_) => ChoosePlanScreen(journeyId: _selectedId!),
+      ),
     );
   }
 

@@ -1,26 +1,94 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
-import 'miscarriage_plan_overview_screen.dart';
-import 'miscarriage_subscription_plan.dart';
+import '../bride/bride_plan_overview_screen.dart';
+import '../miscarriage/miscarriage_plan_overview_screen.dart';
+import '../new_mother/new_mother_plan_overview_screen.dart';
+import '../pregnant/pregnant_plan_overview_screen.dart';
+import 'review_confirm_screen.dart';
+import 'subscription_plan.dart';
 
-class MiscarriageChoosePlanScreen extends StatefulWidget {
-  const MiscarriageChoosePlanScreen({super.key});
+class ChoosePlanScreen extends StatefulWidget {
+  const ChoosePlanScreen({super.key, required this.journeyId});
 
-  static const routeName = 'miscarriage_choose_plan';
+  final String journeyId;
+
+  static const routeName = 'choose_plan';
 
   @override
-  State<MiscarriageChoosePlanScreen> createState() =>
-      _MiscarriageChoosePlanScreenState();
+  State<ChoosePlanScreen> createState() => _ChoosePlanScreenState();
 }
 
-class _MiscarriageChoosePlanScreenState
-    extends State<MiscarriageChoosePlanScreen> {
+class _ChoosePlanScreenState extends State<ChoosePlanScreen> {
   bool _yearly = false;
-  MiscarriagePlanTier _selected = MiscarriagePlanTier.premium;
+  PlanTier _selected = PlanTier.premium;
 
-  MiscarriageSubscriptionPlan get _selectedPlan =>
-      MiscarriageSubscriptionPlan.all.firstWhere((p) => p.tier == _selected);
+  late final List<SubscriptionPlan> _plans =
+      SubscriptionPlan.forJourney(widget.journeyId);
+
+  SubscriptionPlan get _selectedPlan =>
+      _plans.firstWhere((p) => p.tier == _selected);
+
+  void _onNext() {
+    final journeyId = widget.journeyId;
+    final plan = _selectedPlan;
+    final yearly = _yearly;
+
+    switch (journeyId) {
+      case 'bride':
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => BridePlanOverviewScreen(
+              selectedPlan: plan,
+              yearly: yearly,
+            ),
+          ),
+        );
+        return;
+      case 'pregnant':
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => PregnantPlanOverviewScreen(
+              selectedPlan: plan,
+              yearly: yearly,
+            ),
+          ),
+        );
+        return;
+      case 'new_mother':
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => NewMotherPlanOverviewScreen(
+              selectedPlan: plan,
+              yearly: yearly,
+            ),
+          ),
+        );
+        return;
+      case 'miscarriage_support':
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => MiscarriagePlanOverviewScreen(
+              selectedPlan: plan,
+              yearly: yearly,
+            ),
+          ),
+        );
+        return;
+      default:
+        // Partner / mother-in-law: skip unfinished overview & go to review.
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ReviewConfirmScreen(
+              journeyId: journeyId,
+              selectedPlan: plan,
+              yearly: yearly,
+              userName: 'Ayesha',
+            ),
+          ),
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +156,7 @@ class _MiscarriageChoosePlanScreenState
                     ),
                   ),
                   const SizedBox(height: 20),
-                  for (final plan in MiscarriageSubscriptionPlan.all) ...[
+                  for (final plan in _plans) ...[
                     _PlanCard(
                       plan: plan,
                       yearly: _yearly,
@@ -109,16 +177,7 @@ class _MiscarriageChoosePlanScreenState
                     width: double.infinity,
                     height: 54,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => MiscarriagePlanOverviewScreen(
-                              selectedPlan: _selectedPlan,
-                              yearly: _yearly,
-                            ),
-                          ),
-                        );
-                      },
+                      onPressed: _onNext,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.magenta,
                         foregroundColor: AppColors.white,
@@ -248,14 +307,14 @@ class _PlanCard extends StatelessWidget {
     required this.onTap,
   });
 
-  final MiscarriageSubscriptionPlan plan;
+  final SubscriptionPlan plan;
   final bool yearly;
   final bool selected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final isFree = plan.tier == MiscarriagePlanTier.basic;
+    final isFree = plan.tier == PlanTier.basic;
     final price = plan.priceLabel(yearly: yearly);
     final period = plan.periodLabel(yearly: yearly);
 

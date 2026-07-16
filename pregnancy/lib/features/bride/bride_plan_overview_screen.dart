@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../subscription/subscription_plan.dart';
 import 'bride_plan_personalize_screen.dart';
 
 class BridePlanOverviewScreen extends StatelessWidget {
-  const BridePlanOverviewScreen({super.key});
+  const BridePlanOverviewScreen({
+    super.key,
+    this.selectedPlan,
+    this.yearly = false,
+  });
+
+  final SubscriptionPlan? selectedPlan;
+  final bool yearly;
 
   static const _features = [
     (
@@ -186,7 +194,11 @@ class BridePlanOverviewScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => const BridePlanPersonalizeScreen(),
+                      builder: (_) => BridePlanPersonalizeScreen(
+                        selectedPlan: selectedPlan ??
+                            SubscriptionPlan.forJourney('bride').first,
+                        yearly: yearly,
+                      ),
                     ),
                   );
                 },

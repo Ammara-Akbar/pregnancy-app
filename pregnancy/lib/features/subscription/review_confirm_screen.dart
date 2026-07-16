@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
-import 'miscarriage_choose_plan_screen.dart';
-import 'miscarriage_home_shell.dart';
-import 'miscarriage_subscription_plan.dart';
+import '../bride/bride_home_shell.dart';
+import '../miscarriage/miscarriage_home_shell.dart';
+import '../new_mother/new_mother_home_shell.dart';
+import '../pregnant/pregnant_home_shell.dart';
+import 'choose_plan_screen.dart';
+import 'subscription_plan.dart';
 
-class MiscarriageReviewConfirmScreen extends StatelessWidget {
-  const MiscarriageReviewConfirmScreen({
+class ReviewConfirmScreen extends StatelessWidget {
+  const ReviewConfirmScreen({
     super.key,
+    required this.journeyId,
     required this.selectedPlan,
     required this.yearly,
     required this.userName,
+    this.weeksPregnant,
+    this.daysPostpartum,
   });
 
-  final MiscarriageSubscriptionPlan selectedPlan;
+  final String journeyId;
+  final SubscriptionPlan selectedPlan;
   final bool yearly;
   final String userName;
+  final int? weeksPregnant;
+  final int? daysPostpartum;
 
   static const _benefitIcons = [
     Icons.card_giftcard_rounded,
@@ -26,13 +35,63 @@ class MiscarriageReviewConfirmScreen extends StatelessWidget {
     Icons.groups_rounded,
   ];
 
+  void _continueToApp(BuildContext context) {
+    final name = userName;
+
+    switch (journeyId) {
+      case 'bride':
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => BrideHomeShell(userName: name)),
+          (route) => false,
+        );
+        return;
+      case 'pregnant':
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (_) => PregnantHomeShell(
+              userName: name,
+              weeksPregnant: weeksPregnant ?? 12,
+            ),
+          ),
+          (route) => false,
+        );
+        return;
+      case 'new_mother':
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (_) => NewMotherHomeShell(
+              userName: name,
+              daysPostpartum: daysPostpartum ?? 14,
+            ),
+          ),
+          (route) => false,
+        );
+        return;
+      case 'miscarriage_support':
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (_) => MiscarriageHomeShell(userName: name),
+          ),
+          (route) => false,
+        );
+        return;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('This journey home is coming soon.'),
+          ),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final isFree = selectedPlan.tier == MiscarriagePlanTier.basic;
+    final isFree = selectedPlan.tier == PlanTier.basic;
     final price = selectedPlan.priceLabel(yearly: yearly);
     final period = selectedPlan.periodLabel(yearly: yearly);
     final totalLabel = isFree ? 'Free' : 'PKR $price / $period';
+    final journey = JourneySubscriptionInfo.forId(journeyId);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFF8FA),
@@ -110,9 +169,9 @@ class MiscarriageReviewConfirmScreen extends StatelessWidget {
                         _SummaryRow(
                           iconBg: const Color(0xFFF0E8F8),
                           iconColor: const Color(0xFF9B7BB8),
-                          icon: Icons.favorite_border_rounded,
+                          icon: journey.roleIcon,
                           label: 'I am a',
-                          value: 'Seeking Miscarriage Support',
+                          value: journey.roleLabel,
                           onEdit: () {
                             Navigator.of(context).popUntil(
                               (route) =>
@@ -132,7 +191,7 @@ class MiscarriageReviewConfirmScreen extends StatelessWidget {
                             Navigator.of(context).popUntil(
                               (route) =>
                                   route.settings.name ==
-                                      MiscarriageChoosePlanScreen.routeName ||
+                                      ChoosePlanScreen.routeName ||
                                   route.isFirst,
                             );
                           },
@@ -257,15 +316,7 @@ class MiscarriageReviewConfirmScreen extends StatelessWidget {
                     width: double.infinity,
                     height: 54,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                MiscarriageHomeShell(userName: userName),
-                          ),
-                          (route) => false,
-                        );
-                      },
+                      onPressed: () => _continueToApp(context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.magenta,
                         foregroundColor: AppColors.white,
