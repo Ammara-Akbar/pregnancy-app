@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../bride/bride_plan_overview_screen.dart';
-import '../miscarriage/miscarriage_home_shell.dart';
+import '../miscarriage/miscarriage_plan_overview_screen.dart';
 import '../new_mother/new_mother_plan_overview_screen.dart';
 import '../pregnant/pregnant_plan_overview_screen.dart';
 
@@ -104,9 +104,10 @@ class _JourneySelectionScreenState extends State<JourneySelectionScreen> {
     }
 
     if (_selectedId == 'miscarriage_support') {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const MiscarriageHomeShell()),
-        (route) => false,
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => const MiscarriagePlanOverviewScreen(),
+        ),
       );
       return;
     }
