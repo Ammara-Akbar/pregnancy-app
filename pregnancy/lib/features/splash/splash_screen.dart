@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
@@ -11,20 +14,26 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
+    with TickerProviderStateMixin {
+  late final AnimationController _fadeController;
+  late final AnimationController _spinController;
   late final Animation<double> _fadeIn;
+  Timer? _navTimer;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+    _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),
     );
-    _fadeIn = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-    _controller.forward();
-    Future.delayed(const Duration(milliseconds: 2800), _goToOnboarding);
+    _spinController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+    _fadeIn = CurvedAnimation(parent: _fadeController, curve: Curves.easeOut);
+    _fadeController.forward();
+    _navTimer = Timer(const Duration(milliseconds: 2800), _goToOnboarding);
   }
 
   void _goToOnboarding() {
@@ -44,115 +53,136 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _navTimer?.cancel();
+    _fadeController.dispose();
+    _spinController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final bottom = MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
+      backgroundColor: const Color(0xFFFFF5F8),
       body: FadeTransition(
         opacity: _fadeIn,
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Soft floral / blush background
-            DecoratedBox(
-              decoration: const BoxDecoration(
+            const DecoratedBox(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
                     Color(0xFFFFF8FA),
-                    AppColors.softPink,
-                    AppColors.blush,
-                    Color(0xFFE8C4D2),
+                    Color(0xFFFFF0F5),
+                    Color(0xFFFFFBFC),
+                    Color(0xFFFCE4EC),
                   ],
-                  stops: [0.0, 0.35, 0.65, 1.0],
+                  stops: [0.0, 0.35, 0.7, 1.0],
                 ),
               ),
             ),
-            // Soft light bloom behind illustration
-            Positioned(
-              top: size.height * 0.28,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  width: size.width * 0.85,
-                  height: size.width * 0.85,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        Colors.white.withValues(alpha: 0.95),
-                        Colors.white.withValues(alpha: 0.35),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            // Decorative floating petals / bokeh
-            ..._buildBokeh(size),
-            SafeArea(
-              bottom: false,
-              child: Column(
-                children: [
-                  SizedBox(height: size.height * 0.06),
-                  _buildBrandHeader(),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: size.width * 0.06,
-                      ),
-                      child: Image.asset(
-                        'assets/images/pregnant_woman.png',
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.18),
-                ],
-              ),
-            ),
-            // Burgundy wave footer
+            const Positioned.fill(child: _SplashLeaves()),
             Align(
               alignment: Alignment.bottomCenter,
               child: SizedBox(
                 width: double.infinity,
-                height: size.height * 0.22,
-                child: CustomPaint(
-                  painter: _WavePainter(),
-                  child: SafeArea(
-                    top: false,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 28),
-                        const Text(
-                          'صحت مند ماں، صحت مند نسل',
-                          textAlign: TextAlign.center,
-                          textDirection: TextDirection.rtl,
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            height: 1.6,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Icon(
-                          Icons.favorite,
-                          color: AppColors.white,
-                          size: 18,
-                        ),
-                      ],
+                height: size.height * 0.32,
+                child: CustomPaint(painter: _BottomWavePainter()),
+              ),
+            ),
+            SafeArea(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(28, 24, 28, 20 + bottom * 0.2),
+                child: Column(
+                  children: [
+                    const Spacer(flex: 2),
+                    Image.asset(
+                      'assets/images/sehat_maa_logo.png',
+                      width: size.width * 0.55,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/images/logo.png',
+                          width: size.width * 0.55,
+                          fit: BoxFit.contain,
+                        );
+                      },
                     ),
-                  ),
+                    const SizedBox(height: 28),
+                    SizedBox(
+                      width: 168,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 1,
+                              color: const Color(0xFFD4C0C8),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Icon(
+                              Icons.favorite,
+                              size: 13,
+                              color: AppColors.magenta,
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 1,
+                              color: const Color(0xFFD4C0C8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 22),
+                    const Text(
+                      'Guidance. Support. Care.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF4A3A42),
+                        letterSpacing: 0.2,
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'For every step of motherhood.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.magenta,
+                        letterSpacing: 0.15,
+                        height: 1.3,
+                      ),
+                    ),
+                    const Spacer(flex: 3),
+                    RotationTransition(
+                      turns: _spinController,
+                      child: const _DotSpinner(),
+                    ),
+                    const SizedBox(height: 14),
+                    const Text(
+                      'Preparing your personalized experience...',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFFB0A0A8),
+                        letterSpacing: 0.1,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
                 ),
               ),
             ),
@@ -161,163 +191,67 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
+}
 
-  Widget _buildBrandHeader() {
-    return Column(
-      children: [
-        Container(
-          width: 64,
-          height: 64,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFFE89AB8), AppColors.magenta], 
+class _DotSpinner extends StatelessWidget {
+  const _DotSpinner();
+
+  @override
+  Widget build(BuildContext context) {
+    const count = 8;
+    const radius = 12.0;
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: Stack(
+        alignment: Alignment.center,
+        children: List.generate(count, (i) {
+          final angle = (2 * math.pi / count) * i - math.pi / 2;
+          final t = i / count;
+          final opacity = 0.25 + (0.75 * (1 - t));
+          return Transform.translate(
+            offset: Offset(
+              radius * math.cos(angle),
+              radius * math.sin(angle),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x33C24D7F),
-                blurRadius: 12,
-                offset: Offset(0, 4),
+            child: Container(
+              width: 5.5,
+              height: 5.5,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.magenta.withValues(alpha: opacity),
               ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: CustomPaint(painter: _PregnantSilhouettePainter()),
-          ),
-        ),
-        const SizedBox(height: 14),
-        const Text(
-          'Sehat Maa',
-          style: TextStyle(
-            fontFamily: 'serif',
-            fontSize: 36,
-            fontWeight: FontWeight.w700,
-            color: AppColors.burgundy,
-            height: 1.1,
-            letterSpacing: 0.5,
-          ),
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          width: 180,
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(height: 1, color: AppColors.magenta),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Icon(
-                  Icons.favorite,
-                  size: 14,
-                  color: AppColors.magenta,
-                ),
-              ),
-              Expanded(
-                child: Container(height: 1, color: AppColors.magenta),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          'Your Pregnancy & Motherhood Companion',
-          style: TextStyle(
-            fontSize: 13,
-            color: AppColors.burgundyDeep,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.2,
-          ),
-        ),
-      ],
+            ),
+          );
+        }),
+      ),
     );
-  }
-
-  List<Widget> _buildBokeh(Size size) {
-    final specs = <(double, double, double, double)>[
-      (0.08, 0.18, 28, 0.25),
-      (0.78, 0.14, 36, 0.22),
-      (0.12, 0.42, 18, 0.3),
-      (0.85, 0.38, 22, 0.28),
-      (0.05, 0.55, 14, 0.2),
-      (0.9, 0.52, 16, 0.22),
-    ];
-    return [
-      for (final (x, y, d, a) in specs)
-        Positioned(
-          left: size.width * x,
-          top: size.height * y,
-          child: Container(
-            width: d,
-            height: d,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withValues(alpha: a),
-            ),
-          ),
-        ),
-    ];
   }
 }
 
-class _WavePainter extends CustomPainter {
+class _BottomWavePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = AppColors.burgundy;
+    final paint = Paint()..color = Colors.white.withValues(alpha: 0.85);
 
     final path = Path()
-      ..moveTo(0, size.height * 0.28)
+      ..moveTo(0, size.height * 0.45)
       ..quadraticBezierTo(
         size.width * 0.25,
-        size.height * 0.02,
+        size.height * 0.18,
         size.width * 0.5,
-        size.height * 0.22,
+        size.height * 0.38,
       )
       ..quadraticBezierTo(
-        size.width * 0.75,
-        size.height * 0.42,
+        size.width * 0.78,
+        size.height * 0.58,
         size.width,
-        size.height * 0.18,
+        size.height * 0.32,
       )
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();
 
-    // Soft upper rim for layered wave feel
-    final rimPaint = Paint()..color = const Color(0xFF8B3A62);
-    final rim = Path()
-      ..moveTo(0, size.height * 0.22)
-      ..quadraticBezierTo(
-        size.width * 0.22,
-        size.height * -0.02,
-        size.width * 0.48,
-        size.height * 0.18,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.78,
-        size.height * 0.38,
-        size.width,
-        size.height * 0.12,
-      )
-      ..lineTo(size.width, size.height * 0.45)
-      ..quadraticBezierTo(
-        size.width * 0.75,
-        size.height * 0.42,
-        size.width * 0.5,
-        size.height * 0.28,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.25,
-        size.height * 0.02,
-        0,
-        size.height * 0.28,
-      )
-      ..close();
-
-    canvas.drawPath(rim, rimPaint);
     canvas.drawPath(path, paint);
   }
 
@@ -325,39 +259,88 @@ class _WavePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-class _PregnantSilhouettePainter extends CustomPainter {
+class _SplashLeaves extends StatelessWidget {
+  const _SplashLeaves();
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: CustomPaint(
+        painter: _SplashLeafPainter(),
+        size: Size.infinite,
+      ),
+    );
+  }
+}
+
+class _SplashLeafPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white
+      ..color = const Color(0xFFE8B8C8).withValues(alpha: 0.42)
       ..style = PaintingStyle.fill;
 
-    final path = Path();
-    // Head
-    path.addOval(
-      Rect.fromCircle(
-        center: Offset(size.width * 0.52, size.height * 0.22),
-        radius: size.width * 0.14,
-      ),
+    _drawBranch(
+      canvas,
+      paint,
+      origin: Offset(-6, size.height * 0.06),
+      angle: 0.6,
+      scale: 1.15,
     );
-    // Body / belly silhouette
-    path.moveTo(size.width * 0.38, size.height * 0.36);
-    path.quadraticBezierTo(
-      size.width * 0.22,
-      size.height * 0.55,
-      size.width * 0.32,
-      size.height * 0.88,
+    _drawBranch(
+      canvas,
+      paint,
+      origin: Offset(size.width + 8, size.height * 0.72),
+      angle: math.pi + 0.45,
+      scale: 1.1,
     );
-    path.lineTo(size.width * 0.72, size.height * 0.88);
-    path.quadraticBezierTo(
-      size.width * 0.92,
-      size.height * 0.58,
-      size.width * 0.68,
-      size.height * 0.36,
-    );
-    path.close();
+  }
 
-    canvas.drawPath(path, paint);
+  void _drawBranch(
+    Canvas canvas,
+    Paint paint, {
+    required Offset origin,
+    required double angle,
+    required double scale,
+  }) {
+    canvas.save();
+    canvas.translate(origin.dx, origin.dy);
+    canvas.rotate(angle);
+    canvas.scale(scale);
+
+    final stem = Paint()
+      ..color = paint.color
+      ..strokeWidth = 2.4
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    final stemPath = Path()
+      ..moveTo(0, 0)
+      ..quadraticBezierTo(30, -8, 70, 6);
+    canvas.drawPath(stemPath, stem);
+
+    final leafOffsets = <(double, double, double)>[
+      (16, -12, -0.55),
+      (32, 10, 0.5),
+      (46, -14, -0.4),
+      (60, 8, 0.55),
+      (74, -6, -0.25),
+    ];
+
+    for (final (x, y, rot) in leafOffsets) {
+      canvas.save();
+      canvas.translate(x, y);
+      canvas.rotate(rot);
+      final leaf = Path()
+        ..moveTo(0, 0)
+        ..quadraticBezierTo(12, -8, 26, 0)
+        ..quadraticBezierTo(12, 8, 0, 0)
+        ..close();
+      canvas.drawPath(leaf, paint);
+      canvas.restore();
+    }
+
+    canvas.restore();
   }
 
   @override

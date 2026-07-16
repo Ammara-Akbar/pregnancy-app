@@ -6,9 +6,10 @@ void main() {
     await tester.pumpWidget(const SehatMaaApp());
     await tester.pump();
 
-    expect(find.text('Sehat Maa'), findsOneWidget);
+    expect(find.text('Guidance. Support. Care.'), findsOneWidget);
+    expect(find.text('For every step of motherhood.'), findsOneWidget);
     expect(
-      find.text('Your Pregnancy & Motherhood Companion'),
+      find.text('Preparing your personalized experience...'),
       findsOneWidget,
     );
   });

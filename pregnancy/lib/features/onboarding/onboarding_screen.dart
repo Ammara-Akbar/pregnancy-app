@@ -248,7 +248,7 @@ class _OnboardingPage extends StatelessWidget {
                       ),
                       clipBehavior: Clip.antiAlias,
                       child: Image.asset(
-                        'assets/images/pregnant_woman.png',
+                        'assets/images/pregnant_body_week.png',
                         fit: BoxFit.cover,
                       ),
                     ),
