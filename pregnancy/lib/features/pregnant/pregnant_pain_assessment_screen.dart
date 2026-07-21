@@ -134,13 +134,7 @@ class _PregnantPainAssessmentScreenState
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: 110,
-                        height: 220,
-                        child: CustomPaint(
-                          painter: _BodyPainter(location: _location),
-                        ),
-                      ),
+                      _BodyFigure(location: _location),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Column(
@@ -316,85 +310,74 @@ class _SelectCard extends StatelessWidget {
   }
 }
 
-class _BodyPainter extends CustomPainter {
-  const _BodyPainter({required this.location});
+class _BodyFigure extends StatelessWidget {
+  const _BodyFigure({required this.location});
 
   final String location;
 
+  // Vertical alignment of the pain marker within the body illustration,
+  // expressed as Alignment y values (-1 top, 1 bottom).
+  static const _dotAlignment = <String, Alignment>{
+    'Lower Abdomen': Alignment(0, -0.06),
+    'Lower Back': Alignment(0, -0.16),
+    'Pelvic Area': Alignment(0, 0.06),
+    'Others': Alignment(0, -0.42),
+  };
+
   @override
-  void paint(Canvas canvas, Size size) {
-    final body = Paint()..color = const Color(0xFFF6DCE8);
-    final outline = Paint()
-      ..color = const Color(0xFFE9BED3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-
-    final centerX = size.width / 2;
-    final path = Path()
-      // Head
-      ..addOval(
-        Rect.fromCircle(
-          center: Offset(centerX, size.height * 0.09),
-          radius: size.height * 0.07,
-        ),
-      )
-      // Torso
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: Offset(centerX, size.height * 0.38),
-            width: size.width * 0.52,
-            height: size.height * 0.42,
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 122,
+      height: 209,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/images/pain_body_silhouette.png',
+            fit: BoxFit.cover,
           ),
-          const Radius.circular(26),
-        ),
-      )
-      // Left leg
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: Offset(centerX - size.width * 0.13, size.height * 0.78),
-            width: size.width * 0.2,
-            height: size.height * 0.42,
+          AnimatedAlign(
+            duration: const Duration(milliseconds: 350),
+            curve: Curves.easeOutCubic,
+            alignment: _dotAlignment[location] ?? Alignment.center,
+            child: const _PainDot(),
           ),
-          const Radius.circular(16),
-        ),
-      )
-      // Right leg
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: Offset(centerX + size.width * 0.13, size.height * 0.78),
-            width: size.width * 0.2,
-            height: size.height * 0.42,
-          ),
-          const Radius.circular(16),
-        ),
-      );
-
-    canvas.drawPath(path, body);
-    canvas.drawPath(path, outline);
-
-    // Pain highlight
-    final highlightCenter = switch (location) {
-      'Lower Back' => Offset(centerX, size.height * 0.46),
-      'Pelvic Area' => Offset(centerX, size.height * 0.58),
-      'Others' => Offset(centerX, size.height * 0.3),
-      _ => Offset(centerX, size.height * 0.52),
-    };
-    canvas.drawCircle(
-      highlightCenter,
-      size.width * 0.16,
-      Paint()..color = const Color(0xFFF73573).withValues(alpha: 0.25),
-    );
-    canvas.drawCircle(
-      highlightCenter,
-      size.width * 0.07,
-      Paint()..color = const Color(0xFFF73573).withValues(alpha: 0.55),
+        ],
+      ),
     );
   }
+}
+
+class _PainDot extends StatelessWidget {
+  const _PainDot();
 
   @override
-  bool shouldRepaint(covariant _BodyPainter oldDelegate) =>
-      oldDelegate.location != location;
+  Widget build(BuildContext context) {
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: const Color(0xFFF73573).withValues(alpha: 0.18),
+      ),
+      alignment: Alignment.center,
+      child: Container(
+        width: 22,
+        height: 22,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: const Color(0xFFF73573).withValues(alpha: 0.35),
+        ),
+        alignment: Alignment.center,
+        child: Container(
+          width: 10,
+          height: 10,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color(0xFFF73573),
+          ),
+        ),
+      ),
+    );
+  }
 }
