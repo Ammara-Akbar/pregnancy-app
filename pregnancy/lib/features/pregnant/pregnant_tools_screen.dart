@@ -1,283 +1,318 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_colors.dart';
 import 'pregnant_diet_screen.dart';
+import 'pregnant_kick_counter_screen.dart';
+import 'pregnant_ovulation_calendar_screen.dart';
 import 'pregnant_reminders_screen.dart';
 import 'pregnant_symptoms_screen.dart';
+import 'pregnant_weight_tracker_screen.dart';
 
 class PregnantToolsScreen extends StatelessWidget {
   const PregnantToolsScreen({super.key, this.weeksPregnant = 12});
 
   final int weeksPregnant;
 
-  static const _essentials = [
-    (Icons.directions_walk_rounded, 'Kick Counter', Color(0xFF4CAF7A)),
-    (Icons.timer_outlined, 'Contraction Timer', Color(0xFFC24D7F)),
-    (Icons.monitor_weight_outlined, 'Weight Tracker', Color(0xFF5BA8D9)),
-    (Icons.water_drop_outlined, 'Water Tracker', Color(0xFF42A5F5)),
-    (Icons.medical_services_outlined, 'Symptom Checker', Color(0xFF8B6BA8)),
-    (Icons.medication_rounded, 'Medicine Reminder', Color(0xFFE07A4A)),
-  ];
-
-  static const _guides = [
-    (Icons.calendar_month_rounded, 'Pregnancy Week by Week', 'Track baby growth & changes'),
-    (Icons.restaurant_rounded, 'Food & Nutrition', 'Safe foods & meal ideas'),
-    (Icons.self_improvement_rounded, 'Exercises & Yoga', 'Safe moves for every stage'),
-    (Icons.airline_seat_flat, 'Labor & Delivery', 'Prepare for birth day'),
-    (Icons.baby_changing_station, 'Breastfeeding Guide', 'Latching & milk tips'),
-    (Icons.favorite_outline, 'Baby Care Basics', 'Newborn care essentials'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+        padding: const EdgeInsets.only(bottom: 24),
         children: [
+          const _ToolsHeader(),
+          const SizedBox(height: 4),
+          _ToolSection(
+            title: 'Baby',
+            subtitle: "Track your baby's growth & movements",
+            titleColor: const Color(0xFF7B6CD9),
+            backgroundColor: const Color(0xFFEFEBFB),
+            tools: const [
+              _Tool(
+                Icons.tag_faces_outlined,
+                'Kick Counter',
+                Color(0xFFE86B9A),
+              ),
+              _Tool(Icons.child_care_rounded, 'Baby Growth', Color(0xFFE86B9A)),
+              _Tool(
+                Icons.insert_chart_outlined_rounded,
+                'Baby Position',
+                Color(0xFFE86B9A),
+              ),
+              _Tool(
+                Icons.calendar_month_outlined,
+                'Ovulation',
+                Color(0xFF7B6CD9),
+              ),
+            ],
+            onTap: (title) {
+              if (title == 'Kick Counter') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantKickCounterScreen(),
+                  ),
+                );
+              } else if (title == 'Ovulation') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantOvulationCalendarScreen(),
+                  ),
+                );
+              }
+            },
+          ),
+          _ToolSection(
+            title: 'Health',
+            subtitle: 'Track your health & wellness',
+            titleColor: const Color(0xFFD45A8C),
+            backgroundColor: const Color(0xFFFDEAF1),
+            tools: const [
+              _Tool(
+                Icons.accessibility_new_rounded,
+                'Pain Assessment',
+                Color(0xFFD45A8C),
+              ),
+              _Tool(
+                Icons.monitor_weight_outlined,
+                'Weight Tracker',
+                Color(0xFF5BA8D9),
+              ),
+              _Tool(
+                Icons.favorite_border_rounded,
+                'BP Tracker',
+                Color(0xFF7B6CD9),
+              ),
+              _Tool(Icons.more_horiz_rounded, 'More', Color(0xFF8A7A84)),
+            ],
+            onTap: (title) {
+              if (title == 'Pain Assessment') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        PregnantSymptomsScreen(weeksPregnant: weeksPregnant),
+                  ),
+                );
+              } else if (title == 'Weight Tracker') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantWeightTrackerScreen(),
+                  ),
+                );
+              } else if (title == 'More') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantRemindersScreen(),
+                  ),
+                );
+              }
+            },
+          ),
+          _ToolSection(
+            title: 'Nutrition',
+            subtitle: 'Eat right for you & your baby',
+            titleColor: const Color(0xFFE8913A),
+            backgroundColor: const Color(0xFFFFF2E3),
+            tools: const [
+              _Tool(Icons.restaurant_rounded, 'Diet Plan', Color(0xFF6BA84C)),
+              _Tool(
+                Icons.brightness_low_rounded,
+                'Vitamins',
+                Color(0xFFE8913A),
+              ),
+              _Tool(
+                Icons.water_drop_outlined,
+                'Water Tracker',
+                Color(0xFF5BA8D9),
+              ),
+              _Tool(Icons.more_horiz_rounded, 'More', Color(0xFF8A7A84)),
+            ],
+            onTap: (title) {
+              if (title == 'Diet Plan') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        PregnantDietScreen(weeksPregnant: weeksPregnant),
+                  ),
+                );
+              }
+            },
+          ),
+          _ToolSection(
+            title: 'Labor & Delivery',
+            subtitle: 'Prepare for your big day',
+            titleColor: const Color(0xFF4A90B8),
+            backgroundColor: const Color(0xFFE8F3F9),
+            tools: const [
+              _Tool(
+                Icons.timer_outlined,
+                'Contraction Timer',
+                Color(0xFF4A90B8),
+              ),
+              _Tool(
+                Icons.work_outline_rounded,
+                'Hospital Bag',
+                Color(0xFFD45A8C),
+              ),
+              _Tool(
+                Icons.description_outlined,
+                'Birth Plan',
+                Color(0xFF7B6CD9),
+              ),
+              _Tool(Icons.air_rounded, 'Breathing', Color(0xFF6BA84C)),
+            ],
+            onTap: (title) {},
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ToolsHeader extends StatelessWidget {
+  const _ToolsHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.fromLTRB(20, 16, 16, 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Pregnancy Tools',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF2C3A55),
+            ),
+          ),
+          SizedBox(height: 4),
+          Text(
+            'Everything you need, all in one place',
+            style: TextStyle(fontSize: 13, color: Color(0xFF8A7A84)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Tool {
+  const _Tool(this.icon, this.label, this.color);
+
+  final IconData icon;
+  final String label;
+  final Color color;
+}
+
+class _ToolSection extends StatelessWidget {
+  const _ToolSection({
+    required this.title,
+    required this.subtitle,
+    required this.titleColor,
+    required this.backgroundColor,
+    required this.tools,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final Color titleColor;
+  final Color backgroundColor;
+  final List<_Tool> tools;
+  final ValueChanged<String> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 6, 16, 6),
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              color: titleColor,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            subtitle,
+            style: const TextStyle(fontSize: 12, color: Color(0xFF8A7A84)),
+          ),
+          const SizedBox(height: 12),
           Row(
             children: [
-              const Text(
-                'Tools',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF2C3A55),
+              for (var i = 0; i < tools.length; i++) ...[
+                Expanded(
+                  child: _ToolTile(tool: tools[i], onTap: onTap),
                 ),
-              ),
-              const Spacer(),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.search_rounded, color: Color(0xFF2C3A55)),
+                if (i < tools.length - 1) const SizedBox(width: 10),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ToolTile extends StatelessWidget {
+  const _ToolTile({required this.tool, required this.onTap});
+
+  final _Tool tool;
+  final ValueChanged<String> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: () => onTap(tool.label),
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: Colors.white),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          const Text(
-            'Daily Essentials',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF2C3A55),
-            ),
-          ),
-          const SizedBox(height: 12),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: _essentials.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1.35,
-            ),
-            itemBuilder: (context, index) {
-              final item = _essentials[index];
-              return Material(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(18),
-                elevation: 0,
-                shadowColor: Colors.black12,
-                child: InkWell(
-                  onTap: () {
-                    final title = item.$2;
-                    if (title == 'Symptom Checker') {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => PregnantSymptomsScreen(
-                            weeksPregnant: weeksPregnant,
-                          ),
-                        ),
-                      );
-                    } else if (title == 'Medicine Reminder') {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const PregnantRemindersScreen(),
-                        ),
-                      );
-                    }
-                  },
-                  borderRadius: BorderRadius.circular(18),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: const Color(0xFFF0E4EA)),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: item.$3.withValues(alpha: 0.12),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(item.$1, color: item.$3, size: 24),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          item.$2,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF2C3A55),
-                          ),
-                        ),
-                      ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(tool.icon, color: tool.color, size: 26),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 28,
+                child: Center(
+                  child: Text(
+                    tool.label,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    style: const TextStyle(
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF2C3A55),
+                      height: 1.2,
                     ),
                   ),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 22),
-          const Text(
-            'Guides & Resources',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF2C3A55),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(18),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                for (var i = 0; i < _guides.length; i++) ...[
-                  ListTile(
-                    leading: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: AppColors.blush,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(
-                        _guides[i].$1,
-                        color: AppColors.magenta,
-                        size: 20,
-                      ),
-                    ),
-                    title: Text(
-                      _guides[i].$2,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF2C3A55),
-                      ),
-                    ),
-                    subtitle: Text(
-                      _guides[i].$3,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textMuted,
-                      ),
-                    ),
-                    trailing: const Icon(
-                      Icons.chevron_right_rounded,
-                      color: AppColors.skipGrey,
-                    ),
-                    onTap: () {
-                      if (_guides[i].$2 == 'Food & Nutrition') {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => PregnantDietScreen(
-                              weeksPregnant: weeksPregnant,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  if (i < _guides.length - 1)
-                    const Divider(
-                      height: 1,
-                      indent: 70,
-                      color: Color(0xFFF3E8ED),
-                    ),
-                ],
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFCE8EF),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Row(
-              children: [
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Need Help?',
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF2C3A55),
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Talk to our experts anytime.',
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          color: AppColors.textMuted,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                    ],
-                  ),
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    'assets/images/journey_mother_in_law.png',
-                    width: 56,
-                    height: 56,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.magenta,
-                foregroundColor: Colors.white,
-                elevation: 0,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
                 ),
               ),
-              child: const Text(
-                'Chat Now',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
