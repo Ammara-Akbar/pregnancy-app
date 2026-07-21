@@ -6,6 +6,8 @@ import 'pregnant_baby_size.dart';
 import 'pregnant_baby_size_screen.dart';
 import 'pregnant_checkups_screen.dart';
 import 'pregnant_diet_screen.dart';
+import 'pregnant_gentle_movement_screen.dart';
+import 'pregnant_kick_awareness_screen.dart';
 import 'pregnant_reminders_screen.dart';
 import 'pregnant_symptom_guide.dart';
 import 'pregnant_symptoms_screen.dart';
@@ -52,8 +54,18 @@ class _PregnantHomeScreenState extends State<PregnantHomeScreen> {
 
   String _formatDate(DateTime date) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
@@ -171,9 +183,8 @@ class _PregnantHomeScreenState extends State<PregnantHomeScreen> {
               Navigator.pop(context);
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => PregnantDietScreen(
-                    weeksPregnant: widget.weeksPregnant,
-                  ),
+                  builder: (_) =>
+                      PregnantDietScreen(weeksPregnant: widget.weeksPregnant),
                 ),
               );
             },
@@ -213,8 +224,7 @@ class _PregnantHomeScreenState extends State<PregnantHomeScreen> {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () =>
-                          _scaffoldKey.currentState?.openDrawer(),
+                      onPressed: () => _scaffoldKey.currentState?.openDrawer(),
                       icon: const Icon(
                         Icons.menu_rounded,
                         color: Color(0xFF2C3A55),
@@ -349,8 +359,9 @@ class _PregnantHomeScreenState extends State<PregnantHomeScreen> {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF8B6BA8)
-                                    .withValues(alpha: 0.15),
+                                color: const Color(
+                                  0xFF8B6BA8,
+                                ).withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
@@ -688,7 +699,11 @@ class _PregnantHomeScreenState extends State<PregnantHomeScreen> {
                         title: 'Kick awareness',
                         subtitle: 'Notice patterns daily',
                         color: AppColors.magenta,
-                        onTap: () => _openTodaysPlan(initialTab: 0),
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const PregnantKickAwarenessScreen(),
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -698,7 +713,13 @@ class _PregnantHomeScreenState extends State<PregnantHomeScreen> {
                         title: 'Gentle movement',
                         subtitle: 'Walk or stretch',
                         color: const Color(0xFF66BB6A),
-                        onTap: () => _openTodaysPlan(initialTab: 2),
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => PregnantGentleMovementScreen(
+                              weeksPregnant: widget.weeksPregnant,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -908,27 +929,42 @@ class _PregnantHomeDrawer extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ListTile(
-              leading: const Icon(Icons.checklist_rounded, color: AppColors.magenta),
+              leading: const Icon(
+                Icons.checklist_rounded,
+                color: AppColors.magenta,
+              ),
               title: const Text("Today's Plan"),
               onTap: onTodaysPlan,
             ),
             ListTile(
-              leading: const Icon(Icons.restaurant_rounded, color: AppColors.magenta),
+              leading: const Icon(
+                Icons.restaurant_rounded,
+                color: AppColors.magenta,
+              ),
               title: const Text('Diet & Meals'),
               onTap: onDiet,
             ),
             ListTile(
-              leading: const Icon(Icons.healing_outlined, color: AppColors.magenta),
+              leading: const Icon(
+                Icons.healing_outlined,
+                color: AppColors.magenta,
+              ),
               title: const Text('Symptoms & Pain'),
               onTap: onSymptoms,
             ),
             ListTile(
-              leading: const Icon(Icons.notifications_active_outlined, color: AppColors.magenta),
+              leading: const Icon(
+                Icons.notifications_active_outlined,
+                color: AppColors.magenta,
+              ),
               title: const Text('Reminders'),
               onTap: onReminders,
             ),
             ListTile(
-              leading: const Icon(Icons.medical_services_outlined, color: AppColors.magenta),
+              leading: const Icon(
+                Icons.medical_services_outlined,
+                color: AppColors.magenta,
+              ),
               title: const Text('Checkups'),
               onTap: onCheckups,
             ),
