@@ -8,6 +8,7 @@ import 'pregnant_due_date_screen.dart';
 import 'pregnant_kick_counter_screen.dart';
 import 'pregnant_ovulation_calendar_screen.dart';
 import 'pregnant_pain_assessment_screen.dart';
+import 'pregnant_water_tracker_screen.dart';
 import 'pregnant_weight_tracker_screen.dart';
 
 class PregnantToolsScreen extends StatelessWidget {
@@ -150,6 +151,12 @@ class PregnantToolsScreen extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (_) =>
                         PregnantDietScreen(weeksPregnant: weeksPregnant),
+                  ),
+                );
+              } else if (title == 'Water Tracker') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantWaterTrackerScreen(),
                   ),
                 );
               }
