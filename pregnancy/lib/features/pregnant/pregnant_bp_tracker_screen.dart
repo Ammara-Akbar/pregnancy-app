@@ -87,81 +87,14 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
   ];
 
   Future<void> _addReading() async {
-    final systolicController = TextEditingController();
-    final diastolicController = TextEditingController();
-    final pulseController = TextEditingController();
-
-    final saved = await showDialog<bool>(
+    final result = await showDialog<_BpReading>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add reading'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: systolicController,
-              autofocus: true,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Systolic (upper)',
-                suffixText: 'mmHg',
-              ),
-            ),
-            TextField(
-              controller: diastolicController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Diastolic (lower)',
-                suffixText: 'mmHg',
-              ),
-            ),
-            TextField(
-              controller: pulseController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Pulse',
-                suffixText: 'bpm',
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Save'),
-          ),
-        ],
-      ),
+      builder: (context) => const _AddReadingDialog(),
     );
 
-    if (saved == true && mounted) {
-      final systolic = int.tryParse(systolicController.text);
-      final diastolic = int.tryParse(diastolicController.text);
-      final pulse = int.tryParse(pulseController.text) ?? 0;
-      if (systolic != null &&
-          diastolic != null &&
-          systolic > 0 &&
-          diastolic > 0) {
-        setState(() {
-          _readings.insert(
-            0,
-            _BpReading(
-              systolic: systolic,
-              diastolic: diastolic,
-              pulse: pulse,
-              takenAt: DateTime.now(),
-            ),
-          );
-        });
-      }
+    if (result != null && mounted) {
+      setState(() => _readings.insert(0, result));
     }
-    systolicController.dispose();
-    diastolicController.dispose();
-    pulseController.dispose();
   }
 
   static String _timeLabel(DateTime takenAt) {
@@ -504,6 +437,94 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _AddReadingDialog extends StatefulWidget {
+  const _AddReadingDialog();
+
+  @override
+  State<_AddReadingDialog> createState() => _AddReadingDialogState();
+}
+
+class _AddReadingDialogState extends State<_AddReadingDialog> {
+  final _systolicController = TextEditingController();
+  final _diastolicController = TextEditingController();
+  final _pulseController = TextEditingController();
+
+  @override
+  void dispose() {
+    _systolicController.dispose();
+    _diastolicController.dispose();
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    final systolic = int.tryParse(_systolicController.text);
+    final diastolic = int.tryParse(_diastolicController.text);
+    final pulse = int.tryParse(_pulseController.text) ?? 0;
+    if (systolic == null ||
+        diastolic == null ||
+        systolic <= 0 ||
+        diastolic <= 0) {
+      return;
+    }
+    Navigator.pop(
+      context,
+      _BpReading(
+        systolic: systolic,
+        diastolic: diastolic,
+        pulse: pulse,
+        takenAt: DateTime.now(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Add reading'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _systolicController,
+              autofocus: true,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Systolic (upper)',
+                suffixText: 'mmHg',
+              ),
+            ),
+            TextField(
+              controller: _diastolicController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Diastolic (lower)',
+                suffixText: 'mmHg',
+              ),
+            ),
+            TextField(
+              controller: _pulseController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Pulse',
+                suffixText: 'bpm',
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(onPressed: _save, child: const Text('Save')),
+      ],
     );
   }
 }

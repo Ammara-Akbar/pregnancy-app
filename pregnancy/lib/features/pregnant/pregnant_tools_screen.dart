@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'pregnant_baby_position_assessment_screen.dart';
 import 'pregnant_baby_tracker_screen.dart';
+import 'pregnant_birth_plan_screen.dart';
 import 'pregnant_bp_tracker_screen.dart';
 import 'pregnant_contraction_timer_screen.dart';
 import 'pregnant_diet_screen.dart';
 import 'pregnant_due_date_screen.dart';
+import 'pregnant_hospital_bag_screen.dart';
 import 'pregnant_kick_counter_screen.dart';
 import 'pregnant_ovulation_calendar_screen.dart';
 import 'pregnant_pain_assessment_screen.dart';
@@ -197,6 +199,18 @@ class PregnantToolsScreen extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const PregnantContractionTimerScreen(),
+                  ),
+                );
+              } else if (title == 'Hospital Bag') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantHospitalBagScreen(),
+                  ),
+                );
+              } else if (title == 'Birth Plan') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantBirthPlanScreen(),
                   ),
                 );
               }

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
+
 class _Contraction {
   const _Contraction({
     required this.startedAt,
@@ -86,11 +88,11 @@ class _PregnantContractionTimerScreenState
   Widget build(BuildContext context) {
     final last = _history.isEmpty ? null : _history.first;
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8FB),
+      backgroundColor: AppColors.softPink,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: const Color(0xFF21145F),
+        foregroundColor: AppColors.burgundy,
         centerTitle: true,
         title: const Text(
           'Contraction Timer',
@@ -105,15 +107,15 @@ class _PregnantContractionTimerScreenState
             const Text(
               'Track your contractions',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+              style: TextStyle(fontSize: 12, color: AppColors.textMuted),
             ),
             const SizedBox(height: 18),
             Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: const Color(0xFFF0E5EB)),
+                border: Border.all(color: AppColors.mistPink),
               ),
               child: Row(
                 children: [
@@ -128,7 +130,7 @@ class _PregnantContractionTimerScreenState
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
                             color: _tab == index
-                                ? const Color(0xFFFBD9E6)
+                                ? AppColors.blush
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -139,8 +141,8 @@ class _PregnantContractionTimerScreenState
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
                               color: _tab == index
-                                  ? const Color(0xFFDD3D74)
-                                  : const Color(0xFF625A79),
+                                  ? AppColors.magenta
+                                  : AppColors.textMuted,
                             ),
                           ),
                         ),
@@ -154,16 +156,19 @@ class _PregnantContractionTimerScreenState
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFF0E5EB)),
+                  border: Border.all(color: AppColors.mistPink),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
                       'Last Contraction',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     Row(
@@ -197,13 +202,11 @@ class _PregnantContractionTimerScreenState
                       gradient: const LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Color(0xFFF75590), Color(0xFFE72565)],
+                        colors: [AppColors.magentaBright, AppColors.magenta],
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(
-                            0xFFF73573,
-                          ).withValues(alpha: 0.35),
+                          color: AppColors.magenta.withValues(alpha: 0.35),
                           blurRadius: 24,
                           offset: const Offset(0, 10),
                         ),
@@ -247,9 +250,9 @@ class _PregnantContractionTimerScreenState
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF6EDFB),
+                  color: AppColors.blush,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: const Color(0xFFE9DBF5)),
+                  border: Border.all(color: AppColors.mistPink),
                 ),
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,28 +273,28 @@ class _PregnantContractionTimerScreenState
                 alignment: Alignment.center,
                 child: const Text(
                   'No contractions recorded yet.',
-                  style: TextStyle(fontSize: 13, color: Color(0xFF625A79)),
+                  style: TextStyle(fontSize: 13, color: AppColors.textMuted),
                 ),
               )
             else
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFF0E5EB)),
+                  border: Border.all(color: AppColors.mistPink),
                 ),
                 child: Column(
                   children: [
                     for (var i = 0; i < _history.length; i++) ...[
                       ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: const Color(0xFFFBD9E6),
+                          backgroundColor: AppColors.blush,
                           child: Text(
                             '${_history.length - i}',
                             style: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFFDD3D74),
+                              color: AppColors.magenta,
                             ),
                           ),
                         ),
@@ -300,7 +303,7 @@ class _PregnantContractionTimerScreenState
                           style: const TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF251064),
+                            color: AppColors.textDark,
                           ),
                         ),
                         subtitle: Text(
@@ -309,7 +312,7 @@ class _PregnantContractionTimerScreenState
                               : 'Interval ${_mmss(_history[i].interval!)}',
                           style: const TextStyle(
                             fontSize: 11,
-                            color: Color(0xFF625A79),
+                            color: AppColors.textMuted,
                           ),
                         ),
                         trailing: Text(
@@ -317,7 +320,7 @@ class _PregnantContractionTimerScreenState
                           '${_history[i].startedAt.minute.toString().padLeft(2, '0')}',
                           style: const TextStyle(
                             fontSize: 12,
-                            color: Color(0xFF625A79),
+                            color: AppColors.textMuted,
                           ),
                         ),
                       ),
@@ -325,7 +328,7 @@ class _PregnantContractionTimerScreenState
                         const Divider(
                           height: 1,
                           indent: 70,
-                          color: Color(0xFFF0E5EB),
+                          color: AppColors.mistPink,
                         ),
                     ],
                   ],
@@ -352,7 +355,7 @@ class _TimerStat extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 10, color: Color(0xFF625A79)),
+            style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
           ),
           const SizedBox(height: 5),
           Text(
@@ -360,7 +363,7 @@ class _TimerStat extends StatelessWidget {
             style: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF171426),
+              color: AppColors.textDark,
             ),
           ),
         ],
@@ -381,13 +384,13 @@ class _GuidelineRow extends StatelessWidget {
       children: [
         const Padding(
           padding: EdgeInsets.only(top: 5),
-          child: Icon(Icons.circle, size: 6, color: Color(0xFFDD3D74)),
+          child: Icon(Icons.circle, size: 6, color: AppColors.magenta),
         ),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 11.5, color: Color(0xFF4E416A)),
+            style: const TextStyle(fontSize: 11.5, color: AppColors.textDark),
           ),
         ),
       ],
