@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'pregnant_baby_tracker_screen.dart';
+import 'pregnant_contraction_timer_screen.dart';
 import 'pregnant_diet_screen.dart';
+import 'pregnant_due_date_screen.dart';
 import 'pregnant_kick_counter_screen.dart';
 import 'pregnant_ovulation_calendar_screen.dart';
+import 'pregnant_pain_assessment_screen.dart';
 import 'pregnant_reminders_screen.dart';
-import 'pregnant_symptoms_screen.dart';
 import 'pregnant_weight_tracker_screen.dart';
 
 class PregnantToolsScreen extends StatelessWidget {
@@ -33,8 +36,8 @@ class PregnantToolsScreen extends StatelessWidget {
               ),
               _Tool(Icons.child_care_rounded, 'Baby Growth', Color(0xFFE86B9A)),
               _Tool(
-                Icons.insert_chart_outlined_rounded,
-                'Baby Position',
+                Icons.event_available_outlined,
+                'Due Date',
                 Color(0xFFE86B9A),
               ),
               _Tool(
@@ -48,6 +51,19 @@ class PregnantToolsScreen extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const PregnantKickCounterScreen(),
+                  ),
+                );
+              } else if (title == 'Baby Growth') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        PregnantBabyTrackerScreen(weeksPregnant: weeksPregnant),
+                  ),
+                );
+              } else if (title == 'Due Date') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantDueDateScreen(),
                   ),
                 );
               } else if (title == 'Ovulation') {
@@ -86,8 +102,7 @@ class PregnantToolsScreen extends StatelessWidget {
               if (title == 'Pain Assessment') {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) =>
-                        PregnantSymptomsScreen(weeksPregnant: weeksPregnant),
+                    builder: (_) => const PregnantPainAssessmentScreen(),
                   ),
                 );
               } else if (title == 'Weight Tracker') {
@@ -158,7 +173,15 @@ class PregnantToolsScreen extends StatelessWidget {
               ),
               _Tool(Icons.air_rounded, 'Breathing', Color(0xFF6BA84C)),
             ],
-            onTap: (title) {},
+            onTap: (title) {
+              if (title == 'Contraction Timer') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantContractionTimerScreen(),
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),
