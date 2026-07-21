@@ -9,6 +9,7 @@ import 'pregnant_diet_screen.dart';
 import 'pregnant_due_date_screen.dart';
 import 'pregnant_hospital_bag_screen.dart';
 import 'pregnant_kick_counter_screen.dart';
+import 'pregnant_medicine_reminder_screen.dart';
 import 'pregnant_ovulation_calendar_screen.dart';
 import 'pregnant_pain_assessment_screen.dart';
 import 'pregnant_water_tracker_screen.dart';
@@ -152,7 +153,11 @@ class PregnantToolsScreen extends StatelessWidget {
                 'Water Tracker',
                 Color(0xFF5BA8D9),
               ),
-              _Tool(Icons.more_horiz_rounded, 'More', Color(0xFF8A7A84)),
+              _Tool(
+                Icons.medication_rounded,
+                'Medicine Reminder',
+                Color(0xFFE07A4A),
+              ),
             ],
             onTap: (title) {
               if (title == 'Diet Plan') {
@@ -166,6 +171,12 @@ class PregnantToolsScreen extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const PregnantWaterTrackerScreen(),
+                  ),
+                );
+              } else if (title == 'Medicine Reminder') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantMedicineReminderScreen(),
                   ),
                 );
               }
