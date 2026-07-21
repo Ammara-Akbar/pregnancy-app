@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
+
 class _BpReading {
   const _BpReading({
     required this.systolic,
@@ -39,10 +41,10 @@ extension on _BpCategory {
   };
 
   Color get color => switch (this) {
-    _BpCategory.low => const Color(0xFF5BA8D9),
-    _BpCategory.normal => const Color(0xFF12934F),
-    _BpCategory.elevated => const Color(0xFFE8913A),
-    _BpCategory.high => const Color(0xFFE0475B),
+    _BpCategory.low => AppColors.iconBaby,
+    _BpCategory.normal => AppColors.iconHealth,
+    _BpCategory.elevated => AppColors.iconMedicine,
+    _BpCategory.high => AppColors.magenta,
   };
 
   String get advice => switch (this) {
@@ -120,11 +122,11 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
     final category = _categorize(latest.systolic, latest.diastolic);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8FB),
+      backgroundColor: AppColors.softPink,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: const Color(0xFF21145F),
+        foregroundColor: AppColors.burgundy,
         centerTitle: true,
         title: const Text(
           'BP Tracker',
@@ -139,15 +141,15 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
             const Text(
               'Keep an eye on your blood pressure',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+              style: TextStyle(fontSize: 12, color: AppColors.textMuted),
             ),
             const SizedBox(height: 18),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: const Color(0xFFF0E5EB)),
+                border: Border.all(color: AppColors.mistPink),
               ),
               child: Row(
                 children: [
@@ -166,7 +168,7 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
                           'Latest Reading',
                           style: TextStyle(
                             fontSize: 11,
-                            color: Color(0xFF625A79),
+                            color: AppColors.textMuted,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -176,7 +178,7 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
                             style: const TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF251064),
+                              color: AppColors.burgundy,
                             ),
                             children: const [
                               TextSpan(
@@ -195,14 +197,14 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
                             const Icon(
                               Icons.favorite_rounded,
                               size: 13,
-                              color: Color(0xFFE0475B),
+                              color: AppColors.magenta,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               'Pulse ${latest.pulse} bpm',
                               style: const TextStyle(
                                 fontSize: 11,
-                                color: Color(0xFF625A79),
+                                color: AppColors.textMuted,
                               ),
                             ),
                           ],
@@ -269,9 +271,9 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: const Color(0xFFF0E5EB)),
+                border: Border.all(color: AppColors.mistPink),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,7 +283,7 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF251064),
+                      color: AppColors.textDark,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -310,7 +312,7 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
                                     : FontWeight.w600,
                                 color: item == category
                                     ? item.color
-                                    : const Color(0xFF4E416A),
+                                    : AppColors.textDark,
                               ),
                             ),
                           ),
@@ -318,7 +320,7 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
                             item.range,
                             style: const TextStyle(
                               fontSize: 11,
-                              color: Color(0xFF625A79),
+                              color: AppColors.textMuted,
                             ),
                           ),
                           if (item == category) ...[
@@ -339,9 +341,9 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
             const SizedBox(height: 14),
             Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: const Color(0xFFF0E5EB)),
+                border: Border.all(color: AppColors.mistPink),
               ),
               child: Column(
                 children: [
@@ -354,7 +356,7 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF251064),
+                          color: AppColors.textDark,
                         ),
                       ),
                     ),
@@ -383,7 +385,7 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
                             style: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF251064),
+                              color: AppColors.textDark,
                             ),
                           ),
                           subtitle: Text(
@@ -391,7 +393,7 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
                             'Pulse ${reading.pulse}',
                             style: const TextStyle(
                               fontSize: 11,
-                              color: Color(0xFF625A79),
+                              color: AppColors.textMuted,
                             ),
                           ),
                           trailing: Text(
@@ -409,7 +411,7 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
                       const Divider(
                         height: 1,
                         indent: 70,
-                        color: Color(0xFFF0E5EB),
+                        color: AppColors.mistPink,
                       ),
                   ],
                   const SizedBox(height: 6),
@@ -422,7 +424,7 @@ class _PregnantBpTrackerScreenState extends State<PregnantBpTrackerScreen> {
               child: FilledButton.icon(
                 onPressed: _addReading,
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFFF73573),
+                  backgroundColor: AppColors.magenta,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),

@@ -4,6 +4,7 @@ import 'pregnant_baby_position_assessment_screen.dart';
 import 'pregnant_baby_tracker_screen.dart';
 import 'pregnant_birth_plan_screen.dart';
 import 'pregnant_bp_tracker_screen.dart';
+import 'pregnant_breathing_screen.dart';
 import 'pregnant_contraction_timer_screen.dart';
 import 'pregnant_diet_screen.dart';
 import 'pregnant_due_date_screen.dart';
@@ -12,6 +13,7 @@ import 'pregnant_kick_counter_screen.dart';
 import 'pregnant_medicine_reminder_screen.dart';
 import 'pregnant_ovulation_calendar_screen.dart';
 import 'pregnant_pain_assessment_screen.dart';
+import 'pregnant_vitamins_screen.dart';
 import 'pregnant_water_tracker_screen.dart';
 import 'pregnant_weight_tracker_screen.dart';
 
@@ -173,6 +175,12 @@ class PregnantToolsScreen extends StatelessWidget {
                     builder: (_) => const PregnantWaterTrackerScreen(),
                   ),
                 );
+              } else if (title == 'Vitamins') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantVitaminsScreen(),
+                  ),
+                );
               } else if (title == 'Medicine Reminder') {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -222,6 +230,12 @@ class PregnantToolsScreen extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const PregnantBirthPlanScreen(),
+                  ),
+                );
+              } else if (title == 'Breathing') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantBreathingScreen(),
                   ),
                 );
               }

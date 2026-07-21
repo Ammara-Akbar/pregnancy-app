@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
+
 class PregnantKickCounterScreen extends StatefulWidget {
   const PregnantKickCounterScreen({super.key});
 
@@ -11,7 +13,6 @@ class PregnantKickCounterScreen extends StatefulWidget {
 }
 
 class _PregnantKickCounterScreenState extends State<PregnantKickCounterScreen> {
-  static const _pink = Color(0xFFF73573);
   int _kicks = 0;
   int _elapsedSeconds = 0;
   int _sessions = 0;
@@ -54,11 +55,11 @@ class _PregnantKickCounterScreenState extends State<PregnantKickCounterScreen> {
   Widget build(BuildContext context) {
     final average = _sessions == 0 ? 0 : (_totalKicks / _sessions).round();
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8FB),
+      backgroundColor: AppColors.softPink,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: const Color(0xFF21145F),
+        foregroundColor: AppColors.burgundy,
         centerTitle: true,
         title: const Text(
           'Kick Counter',
@@ -73,7 +74,7 @@ class _PregnantKickCounterScreenState extends State<PregnantKickCounterScreen> {
             const Text(
               "Count your baby's kicks to track their movements.",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+              style: TextStyle(fontSize: 12, color: AppColors.textMuted),
             ),
             const SizedBox(height: 34),
             Center(
@@ -82,14 +83,15 @@ class _PregnantKickCounterScreenState extends State<PregnantKickCounterScreen> {
                 height: 210,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFD9C9F4), width: 10),
+                  color: AppColors.white,
+                  border: Border.all(color: AppColors.blush, width: 10),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(
                       Icons.child_friendly_rounded,
-                      color: Color(0xFF8060BF),
+                      color: AppColors.magenta,
                       size: 36,
                     ),
                     const SizedBox(height: 8),
@@ -99,13 +101,16 @@ class _PregnantKickCounterScreenState extends State<PregnantKickCounterScreen> {
                         fontSize: 48,
                         height: 1,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF251064),
+                        color: AppColors.burgundy,
                       ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
                       'Kicks',
-                      style: TextStyle(fontSize: 13, color: Color(0xFF625A79)),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -115,7 +120,7 @@ class _PregnantKickCounterScreenState extends State<PregnantKickCounterScreen> {
             const Text(
               'Session Time',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+              style: TextStyle(fontSize: 12, color: AppColors.textMuted),
             ),
             const SizedBox(height: 4),
             Text(
@@ -124,7 +129,7 @@ class _PregnantKickCounterScreenState extends State<PregnantKickCounterScreen> {
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF251064),
+                color: AppColors.burgundy,
               ),
             ),
             const SizedBox(height: 22),
@@ -133,7 +138,7 @@ class _PregnantKickCounterScreenState extends State<PregnantKickCounterScreen> {
               child: FilledButton.icon(
                 onPressed: _recordKick,
                 style: FilledButton.styleFrom(
-                  backgroundColor: _pink,
+                  backgroundColor: AppColors.magenta,
                   shape: const StadiumBorder(),
                 ),
                 icon: const Icon(Icons.touch_app_outlined, size: 20),
@@ -149,8 +154,8 @@ class _PregnantKickCounterScreenState extends State<PregnantKickCounterScreen> {
               child: OutlinedButton(
                 onPressed: _endSession,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: _pink,
-                  side: const BorderSide(color: Color(0xFFFFA7C0)),
+                  foregroundColor: AppColors.magenta,
+                  side: const BorderSide(color: AppColors.mistPink),
                   shape: const StadiumBorder(),
                 ),
                 child: const Text('End Session'),
@@ -185,9 +190,9 @@ class _SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF0E5EB)),
+        border: Border.all(color: AppColors.mistPink),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +202,7 @@ class _SummaryCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF251064),
+              color: AppColors.textDark,
             ),
           ),
           const SizedBox(height: 16),
@@ -228,7 +233,7 @@ class _SummaryValue extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 10, color: Color(0xFF625A79)),
+            style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
           ),
           const SizedBox(height: 5),
           Text(
@@ -236,7 +241,7 @@ class _SummaryValue extends StatelessWidget {
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF251064),
+              color: AppColors.burgundy,
             ),
           ),
         ],

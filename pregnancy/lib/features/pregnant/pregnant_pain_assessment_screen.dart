@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
+
 class PregnantPainAssessmentScreen extends StatefulWidget {
   const PregnantPainAssessmentScreen({super.key});
 
@@ -24,7 +26,7 @@ class _PregnantPainAssessmentScreenState
   void _showGuidance() {
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -39,7 +41,7 @@ class _PregnantPainAssessmentScreenState
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF251064),
+                color: AppColors.burgundy,
               ),
             ),
             const SizedBox(height: 10),
@@ -49,7 +51,7 @@ class _PregnantPainAssessmentScreenState
               style: const TextStyle(
                 fontSize: 13,
                 height: 1.5,
-                color: Color(0xFF4E416A),
+                color: AppColors.textDark,
               ),
             ),
             const SizedBox(height: 12),
@@ -60,7 +62,7 @@ class _PregnantPainAssessmentScreenState
               style: TextStyle(
                 fontSize: 13,
                 height: 1.5,
-                color: Color(0xFF4E416A),
+                color: AppColors.textDark,
               ),
             ),
             const SizedBox(height: 20),
@@ -70,7 +72,7 @@ class _PregnantPainAssessmentScreenState
               child: FilledButton(
                 onPressed: () => Navigator.pop(context),
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFFF73573),
+                  backgroundColor: AppColors.magenta,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -90,11 +92,11 @@ class _PregnantPainAssessmentScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8FB),
+      backgroundColor: AppColors.softPink,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: const Color(0xFF21145F),
+        foregroundColor: AppColors.burgundy,
         centerTitle: true,
         title: const Text(
           'Pain Assessment',
@@ -109,15 +111,15 @@ class _PregnantPainAssessmentScreenState
             const Text(
               'Describe your pain to get guidance',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+              style: TextStyle(fontSize: 12, color: AppColors.textMuted),
             ),
             const SizedBox(height: 18),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFF0E5EB)),
+                border: Border.all(color: AppColors.mistPink),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,7 +129,7 @@ class _PregnantPainAssessmentScreenState
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF251064),
+                      color: AppColors.textDark,
                     ),
                   ),
                   const SizedBox(height: 14),
@@ -161,9 +163,9 @@ class _PregnantPainAssessmentScreenState
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFF0E5EB)),
+                border: Border.all(color: AppColors.mistPink),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,7 +175,7 @@ class _PregnantPainAssessmentScreenState
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF251064),
+                      color: AppColors.textDark,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -225,7 +227,7 @@ class _PregnantPainAssessmentScreenState
               child: FilledButton(
                 onPressed: _showGuidance,
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFFF73573),
+                  backgroundColor: AppColors.magenta,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -262,10 +264,10 @@ class _SelectCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: selected ? const Color(0xFFFFF2F6) : const Color(0xFFFFF8FB),
+          color: selected ? AppColors.softPink : AppColors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: selected ? const Color(0xFFF73573) : const Color(0xFFF0E5EB),
+            color: selected ? AppColors.magenta : AppColors.mistPink,
             width: selected ? 1.4 : 1,
           ),
         ),
@@ -277,9 +279,7 @@ class _SelectCard extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: selected
-                      ? const Color(0xFFF73573)
-                      : const Color(0xFFCBBFC7),
+                  color: selected ? AppColors.magenta : AppColors.skipGrey,
                   width: selected ? 4 : 1.5,
                 ),
               ),
@@ -291,9 +291,7 @@ class _SelectCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w700,
-                  color: selected
-                      ? const Color(0xFFDD3D74)
-                      : const Color(0xFF4E416A),
+                  color: selected ? AppColors.magenta : AppColors.textDark,
                 ),
               ),
             ),
@@ -301,7 +299,7 @@ class _SelectCard extends StatelessWidget {
               const Icon(
                 Icons.check_rounded,
                 size: 15,
-                color: Color(0xFFF73573),
+                color: AppColors.magenta,
               ),
           ],
         ),
@@ -358,7 +356,7 @@ class _PainDot extends StatelessWidget {
       height: 44,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: const Color(0xFFF73573).withValues(alpha: 0.18),
+        color: AppColors.magenta.withValues(alpha: 0.18),
       ),
       alignment: Alignment.center,
       child: Container(
@@ -366,7 +364,7 @@ class _PainDot extends StatelessWidget {
         height: 22,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: const Color(0xFFF73573).withValues(alpha: 0.35),
+          color: AppColors.magenta.withValues(alpha: 0.35),
         ),
         alignment: Alignment.center,
         child: Container(
@@ -374,7 +372,7 @@ class _PainDot extends StatelessWidget {
           height: 10,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: Color(0xFFF73573),
+            color: AppColors.magenta,
           ),
         ),
       ),

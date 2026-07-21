@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
+
 class PregnantDueDateScreen extends StatefulWidget {
   const PregnantDueDateScreen({super.key});
 
@@ -76,11 +78,11 @@ class _PregnantDueDateScreenState extends State<PregnantDueDateScreen> {
         .inDays;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8FB),
+      backgroundColor: AppColors.softPink,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: const Color(0xFF21145F),
+        foregroundColor: AppColors.burgundy,
         centerTitle: true,
         title: const Text(
           'Due Date Calculator',
@@ -95,7 +97,7 @@ class _PregnantDueDateScreenState extends State<PregnantDueDateScreen> {
             const Text(
               'Calculate your estimated due date',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+              style: TextStyle(fontSize: 12, color: AppColors.textMuted),
             ),
             const SizedBox(height: 18),
             _SegmentedTabs(
@@ -122,9 +124,9 @@ class _PregnantDueDateScreenState extends State<PregnantDueDateScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFF0E5EB)),
+                  border: Border.all(color: AppColors.mistPink),
                 ),
                 child: Row(
                   children: [
@@ -133,7 +135,7 @@ class _PregnantDueDateScreenState extends State<PregnantDueDateScreen> {
                         'Gestational age at scan',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF625A79),
+                          color: AppColors.textMuted,
                         ),
                       ),
                     ),
@@ -143,7 +145,7 @@ class _PregnantDueDateScreenState extends State<PregnantDueDateScreen> {
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF251064),
+                          color: AppColors.textDark,
                         ),
                         items: [
                           for (var week = 4; week <= 40; week++)
@@ -167,15 +169,15 @@ class _PregnantDueDateScreenState extends State<PregnantDueDateScreen> {
             Container(
               padding: const EdgeInsets.fromLTRB(16, 22, 16, 16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFF0E5EB)),
+                border: Border.all(color: AppColors.mistPink),
               ),
               child: Column(
                 children: [
                   const Text(
                     'Your Due Date',
-                    style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+                    style: TextStyle(fontSize: 12, color: AppColors.textMuted),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -183,7 +185,7 @@ class _PregnantDueDateScreenState extends State<PregnantDueDateScreen> {
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFFF73573),
+                      color: AppColors.magenta,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -191,11 +193,11 @@ class _PregnantDueDateScreenState extends State<PregnantDueDateScreen> {
                     _weekdays[_dueDate.weekday - 1],
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF625A79),
+                      color: AppColors.textMuted,
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Divider(height: 1, color: Color(0xFFF0E5EB)),
+                  const Divider(height: 1, color: AppColors.mistPink),
                   const SizedBox(height: 14),
                   Row(
                     children: [
@@ -208,7 +210,7 @@ class _PregnantDueDateScreenState extends State<PregnantDueDateScreen> {
                       ),
                       const SizedBox(
                         height: 44,
-                        child: VerticalDivider(color: Color(0xFFF0E5EB)),
+                        child: VerticalDivider(color: AppColors.mistPink),
                       ),
                       Expanded(
                         child: _ResultStat(
@@ -244,9 +246,9 @@ class _SegmentedTabs extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFF0E5EB)),
+        border: Border.all(color: AppColors.mistPink),
       ),
       child: Row(
         children: [
@@ -257,9 +259,7 @@ class _SegmentedTabs extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
-                    color: selected == i
-                        ? const Color(0xFFFBD9E6)
-                        : Colors.transparent,
+                    color: selected == i ? AppColors.blush : Colors.transparent,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   alignment: Alignment.center,
@@ -269,8 +269,8 @@ class _SegmentedTabs extends StatelessWidget {
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                       color: selected == i
-                          ? const Color(0xFFDD3D74)
-                          : const Color(0xFF625A79),
+                          ? AppColors.magenta
+                          : AppColors.textMuted,
                     ),
                   ),
                 ),
@@ -300,9 +300,9 @@ class _DateFieldCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF0E5EB)),
+        border: Border.all(color: AppColors.mistPink),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +312,7 @@ class _DateFieldCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF251064),
+              color: AppColors.textDark,
             ),
           ),
           const SizedBox(height: 12),
@@ -322,9 +322,9 @@ class _DateFieldCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF8FB),
+                color: AppColors.softPink,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFF0E5EB)),
+                border: Border.all(color: AppColors.mistPink),
               ),
               child: Row(
                 children: [
@@ -336,7 +336,7 @@ class _DateFieldCard extends StatelessWidget {
                           fieldLabel,
                           style: const TextStyle(
                             fontSize: 10,
-                            color: Color(0xFF625A79),
+                            color: AppColors.textMuted,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -345,7 +345,7 @@ class _DateFieldCard extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF171426),
+                            color: AppColors.burgundy,
                           ),
                         ),
                       ],
@@ -353,7 +353,7 @@ class _DateFieldCard extends StatelessWidget {
                   ),
                   const Icon(
                     Icons.calendar_month_outlined,
-                    color: Color(0xFFDD3D74),
+                    color: AppColors.magenta,
                     size: 22,
                   ),
                 ],
@@ -380,7 +380,7 @@ class _ResultStat extends StatelessWidget {
       children: [
         Text(
           prefix ?? '',
-          style: const TextStyle(fontSize: 10, color: Color(0xFF625A79)),
+          style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
         ),
         const SizedBox(height: 4),
         Text(
@@ -388,13 +388,13 @@ class _ResultStat extends StatelessWidget {
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF171426),
+            color: AppColors.burgundy,
           ),
         ),
         const SizedBox(height: 2),
         Text(
           label,
-          style: const TextStyle(fontSize: 10, color: Color(0xFF625A79)),
+          style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
         ),
       ],
     );

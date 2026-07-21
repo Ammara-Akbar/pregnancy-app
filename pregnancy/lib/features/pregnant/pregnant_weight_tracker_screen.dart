@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
+
 class PregnantWeightTrackerScreen extends StatefulWidget {
   const PregnantWeightTrackerScreen({super.key});
 
@@ -56,11 +58,11 @@ class _PregnantWeightTrackerScreenState
     final gain = _currentWeight - _startingWeight;
     final isHealthy = gain >= 5 && gain <= 11.5;
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8FB),
+      backgroundColor: AppColors.softPink,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: const Color(0xFF21145F),
+        foregroundColor: AppColors.burgundy,
         centerTitle: true,
         title: const Text(
           'Weight Tracker',
@@ -82,7 +84,7 @@ class _PregnantWeightTrackerScreenState
             const Text(
               'Track your weight gain during pregnancy',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+              style: TextStyle(fontSize: 12, color: AppColors.textMuted),
             ),
             const SizedBox(height: 22),
             _InfoCard(
@@ -97,7 +99,7 @@ class _PregnantWeightTrackerScreenState
                   ),
                   const SizedBox(
                     height: 52,
-                    child: VerticalDivider(color: Color(0xFFF0E5EB)),
+                    child: VerticalDivider(color: AppColors.mistPink),
                   ),
                   Expanded(
                     child: _Metric(
@@ -116,7 +118,7 @@ class _PregnantWeightTrackerScreenState
                 children: [
                   const Text(
                     'Progress',
-                    style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+                    style: TextStyle(fontSize: 12, color: AppColors.textMuted),
                   ),
                   const SizedBox(height: 7),
                   Text(
@@ -125,8 +127,8 @@ class _PregnantWeightTrackerScreenState
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: isHealthy
-                          ? const Color(0xFF12934F)
-                          : const Color(0xFFE8913A),
+                          ? AppColors.iconHealth
+                          : AppColors.iconMedicine,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -136,7 +138,7 @@ class _PregnantWeightTrackerScreenState
                         : 'Check your recommended weight range',
                     style: const TextStyle(
                       fontSize: 11,
-                      color: Color(0xFF625A79),
+                      color: AppColors.textMuted,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -145,9 +147,9 @@ class _PregnantWeightTrackerScreenState
                     child: LinearProgressIndicator(
                       minHeight: 8,
                       value: (gain / 11.5).clamp(0, 1),
-                      backgroundColor: const Color(0xFFF0EAF3),
+                      backgroundColor: AppColors.ringPink,
                       valueColor: const AlwaysStoppedAnimation(
-                        Color(0xFF25AA68),
+                        AppColors.iconHealth,
                       ),
                     ),
                   ),
@@ -158,7 +160,7 @@ class _PregnantWeightTrackerScreenState
                       '${gain.toStringAsFixed(1)} kg / 11.5 kg',
                       style: const TextStyle(
                         fontSize: 9,
-                        color: Color(0xFF625A79),
+                        color: AppColors.textMuted,
                       ),
                     ),
                   ),
@@ -172,7 +174,7 @@ class _PregnantWeightTrackerScreenState
                 children: [
                   const Text(
                     'Weight Gain (kg)',
-                    style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+                    style: TextStyle(fontSize: 12, color: AppColors.textMuted),
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
@@ -189,13 +191,13 @@ class _PregnantWeightTrackerScreenState
             ),
             const SizedBox(height: 14),
             const _InfoCard(
-              tint: Color(0xFFFFF5EF),
+              tint: AppColors.blush,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Recommended Range',
-                    style: TextStyle(fontSize: 12, color: Color(0xFF625A79)),
+                    style: TextStyle(fontSize: 12, color: AppColors.textMuted),
                   ),
                   SizedBox(height: 7),
                   Text(
@@ -203,13 +205,13 @@ class _PregnantWeightTrackerScreenState
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF251064),
+                      color: AppColors.burgundy,
                     ),
                   ),
                   SizedBox(height: 3),
                   Text(
                     'Total Weight Gain',
-                    style: TextStyle(fontSize: 10, color: Color(0xFF625A79)),
+                    style: TextStyle(fontSize: 10, color: AppColors.textMuted),
                   ),
                 ],
               ),
@@ -222,7 +224,7 @@ class _PregnantWeightTrackerScreenState
 }
 
 class _InfoCard extends StatelessWidget {
-  const _InfoCard({required this.child, this.tint = Colors.white});
+  const _InfoCard({required this.child, this.tint = AppColors.white});
 
   final Widget child;
   final Color tint;
@@ -234,7 +236,7 @@ class _InfoCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: tint,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF0E5EB)),
+        border: Border.all(color: AppColors.mistPink),
       ),
       child: child,
     );
@@ -254,7 +256,7 @@ class _Metric extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 11, color: Color(0xFF625A79)),
+          style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
         ),
         const SizedBox(height: 6),
         Text.rich(
@@ -263,7 +265,7 @@ class _Metric extends StatelessWidget {
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF171426),
+              color: AppColors.burgundy,
             ),
             children: [
               TextSpan(
@@ -289,13 +291,13 @@ class _WeightChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final grid = Paint()
-      ..color = const Color(0xFFF1E7EC)
+      ..color = AppColors.mistPink
       ..strokeWidth = 1;
     final line = Paint()
-      ..color = const Color(0xFFF73573)
+      ..color = AppColors.magenta
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
-    final dot = Paint()..color = const Color(0xFFF73573);
+    final dot = Paint()..color = AppColors.magenta;
     final values = [59.6, 61.7, 65.0, 68.9, 72.5, 75.0, currentWeight];
     const labels = ['5w', '10w', '15w', '20w', '25w', '30w', '40w'];
     const left = 8.0;
@@ -320,7 +322,7 @@ class _WeightChartPainter extends CustomPainter {
       final text = TextPainter(
         text: TextSpan(
           text: labels[i],
-          style: const TextStyle(fontSize: 9, color: Color(0xFF625A79)),
+          style: const TextStyle(fontSize: 9, color: AppColors.textMuted),
         ),
         textDirection: TextDirection.ltr,
       )..layout();

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
+
 class _AssessmentQuestion {
   const _AssessmentQuestion(this.prompt, this.options);
 
@@ -17,7 +19,7 @@ class PregnantBabyPositionAssessmentScreen extends StatefulWidget {
 
 class _PregnantBabyPositionAssessmentScreenState
     extends State<PregnantBabyPositionAssessmentScreen> {
-  static const _pink = Color(0xFFF73573);
+  static const _pink = AppColors.magenta;
   static const _questions = [
     _AssessmentQuestion('Where do you feel the strongest kicks?', [
       'High near the ribs',
@@ -102,11 +104,11 @@ class _PregnantBabyPositionAssessmentScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8FB),
+      backgroundColor: AppColors.softPink,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: const Color(0xFF21145F),
+        foregroundColor: AppColors.burgundy,
         leading: IconButton(
           onPressed: _back,
           icon: const Icon(Icons.arrow_back_rounded),
@@ -131,7 +133,7 @@ class _PregnantBabyPositionAssessmentScreenState
         const Text(
           'Answer a few questions to get an idea',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 11, color: Color(0xFF625A79)),
+          style: TextStyle(fontSize: 11, color: AppColors.textMuted),
         ),
         const SizedBox(height: 22),
         Padding(
@@ -141,7 +143,10 @@ class _PregnantBabyPositionAssessmentScreenState
             children: [
               Text(
                 'Question ${_questionIndex + 1} of ${_questions.length}',
-                style: const TextStyle(fontSize: 10, color: Color(0xFF625A79)),
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: AppColors.textMuted,
+                ),
               ),
               const SizedBox(height: 10),
               ClipRRect(
@@ -149,7 +154,7 @@ class _PregnantBabyPositionAssessmentScreenState
                 child: LinearProgressIndicator(
                   value: (_questionIndex + 1) / _questions.length,
                   minHeight: 7,
-                  backgroundColor: const Color(0xFFF1E7EC),
+                  backgroundColor: AppColors.ringPink,
                   valueColor: const AlwaysStoppedAnimation(_pink),
                 ),
               ),
@@ -164,9 +169,9 @@ class _PregnantBabyPositionAssessmentScreenState
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFF0E5EB)),
+                  border: Border.all(color: AppColors.mistPink),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +181,7 @@ class _PregnantBabyPositionAssessmentScreenState
                       style: const TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF251064),
+                        color: AppColors.textDark,
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -209,7 +214,7 @@ class _PregnantBabyPositionAssessmentScreenState
               onPressed: _answers[_questionIndex] == null ? null : _next,
               style: FilledButton.styleFrom(
                 backgroundColor: _pink,
-                disabledBackgroundColor: const Color(0xFFF3B6C9),
+                disabledBackgroundColor: AppColors.ringPink,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(13),
                 ),
@@ -235,9 +240,9 @@ class _PregnantBabyPositionAssessmentScreenState
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.white,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFF0E5EB)),
+            border: Border.all(color: AppColors.mistPink),
           ),
           child: Column(
             children: [
@@ -246,7 +251,7 @@ class _PregnantBabyPositionAssessmentScreenState
                 height: 78,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color(0xFFFBD9E6),
+                  color: AppColors.blush,
                 ),
                 child: const Icon(
                   Icons.child_friendly_rounded,
@@ -257,7 +262,7 @@ class _PregnantBabyPositionAssessmentScreenState
               const SizedBox(height: 18),
               const Text(
                 'Assessment Result',
-                style: TextStyle(fontSize: 13, color: Color(0xFF625A79)),
+                style: TextStyle(fontSize: 13, color: AppColors.textMuted),
               ),
               const SizedBox(height: 8),
               Text(
@@ -266,7 +271,7 @@ class _PregnantBabyPositionAssessmentScreenState
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF251064),
+                  color: AppColors.textDark,
                 ),
               ),
               const SizedBox(height: 12),
@@ -277,7 +282,7 @@ class _PregnantBabyPositionAssessmentScreenState
                 style: TextStyle(
                   fontSize: 12,
                   height: 1.5,
-                  color: Color(0xFF625A79),
+                  color: AppColors.textMuted,
                 ),
               ),
             ],
@@ -333,10 +338,10 @@ class _AnswerTile extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: selected ? const Color(0xFFFFF2F6) : Colors.white,
+          color: selected ? AppColors.softPink : AppColors.white,
           borderRadius: BorderRadius.circular(11),
           border: Border.all(
-            color: selected ? const Color(0xFFF73573) : const Color(0xFFEDE3E8),
+            color: selected ? AppColors.magenta : AppColors.mistPink,
             width: selected ? 1.3 : 1,
           ),
         ),
@@ -348,9 +353,7 @@ class _AnswerTile extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: selected
-                      ? const Color(0xFFF73573)
-                      : const Color(0xFFCBBFC7),
+                  color: selected ? AppColors.magenta : AppColors.skipGrey,
                   width: selected ? 4 : 1.4,
                 ),
               ),
@@ -362,9 +365,7 @@ class _AnswerTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w600,
-                  color: selected
-                      ? const Color(0xFFDD3D74)
-                      : const Color(0xFF4E416A),
+                  color: selected ? AppColors.magenta : AppColors.textDark,
                 ),
               ),
             ),
@@ -372,7 +373,7 @@ class _AnswerTile extends StatelessWidget {
               const Icon(
                 Icons.check_rounded,
                 size: 17,
-                color: Color(0xFFF73573),
+                color: AppColors.magenta,
               ),
           ],
         ),
@@ -389,16 +390,16 @@ class _MedicalNotice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7E7FA),
+        color: AppColors.blush,
         borderRadius: BorderRadius.circular(13),
-        border: Border.all(color: const Color(0xFFECD5F2)),
+        border: Border.all(color: AppColors.mistPink),
       ),
       child: const Row(
         children: [
           Icon(
             Icons.medical_information_outlined,
             size: 24,
-            color: Color(0xFFB04CC8),
+            color: AppColors.magenta,
           ),
           SizedBox(width: 10),
           Expanded(
@@ -408,7 +409,7 @@ class _MedicalNotice extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10.5,
                 height: 1.5,
-                color: Color(0xFF7A3E8B),
+                color: AppColors.textDark,
               ),
             ),
           ),
