@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'pregnant_baby_position_assessment_screen.dart';
 import 'pregnant_baby_tracker_screen.dart';
+import 'pregnant_bp_tracker_screen.dart';
 import 'pregnant_contraction_timer_screen.dart';
 import 'pregnant_diet_screen.dart';
 import 'pregnant_due_date_screen.dart';
@@ -115,6 +116,12 @@ class PregnantToolsScreen extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const PregnantWeightTrackerScreen(),
+                  ),
+                );
+              } else if (title == 'BP Tracker') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const PregnantBpTrackerScreen(),
                   ),
                 );
               } else if (title == 'Ovulation') {
