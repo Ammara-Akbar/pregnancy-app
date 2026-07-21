@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/preferences/user_preferences.dart';
 import '../../core/theme/app_colors.dart';
 import 'pregnant_community_screen.dart';
 import 'pregnant_home_screen.dart';
@@ -25,84 +26,90 @@ class _PregnantHomeShellState extends State<PregnantHomeShell> {
   int _index = 0;
 
   @override
+  void initState() {
+    super.initState();
+    UserPreferences.instance.ensureWeeksPregnant(widget.weeksPregnant);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final fullName = widget.userName.contains(' ')
         ? widget.userName
         : '${widget.userName} Khan';
 
-    final pages = [
-      PregnantHomeScreen(
-        userName: widget.userName,
-        weeksPregnant: widget.weeksPregnant,
-      ),
-      PregnantJourneyScreen(
-        weeksPregnant: widget.weeksPregnant,
-        userName: widget.userName,
-      ),
-      PregnantToolsScreen(weeksPregnant: widget.weeksPregnant),
-      const PregnantCommunityScreen(),
-      PregnantProfileScreen(
-        userName: fullName,
-        weeksPregnant: widget.weeksPregnant,
-      ),
-    ];
+    return ListenableBuilder(
+      listenable: UserPreferences.instance,
+      builder: (context, _) {
+        final weeks = UserPreferences.instance.weeksPregnant;
+        final pages = [
+          PregnantHomeScreen(userName: widget.userName, weeksPregnant: weeks),
+          PregnantJourneyScreen(
+            weeksPregnant: weeks,
+            userName: widget.userName,
+          ),
+          PregnantToolsScreen(weeksPregnant: weeks),
+          const PregnantCommunityScreen(),
+          PregnantProfileScreen(userName: fullName, weeksPregnant: weeks),
+        ];
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF5F7),
-      body: IndexedStack(index: _index, children: pages),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 12,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _NavItem(
-                  icon: Icons.home_rounded,
-                  label: 'Home',
-                  selected: _index == 0,
-                  onTap: () => setState(() => _index = 0),
-                ),
-                _NavItem(
-                  icon: Icons.favorite_outline,
-                  label: 'Journey',
-                  selected: _index == 1,
-                  onTap: () => setState(() => _index = 1),
-                ),
-                _NavItem(
-                  icon: Icons.local_florist_outlined,
-                  label: 'Tools',
-                  selected: _index == 2,
-                  onTap: () => setState(() => _index = 2),
-                ),
-                _NavItem(
-                  icon: Icons.forum_outlined,
-                  label: 'Community',
-                  selected: _index == 3,
-                  onTap: () => setState(() => _index = 3),
-                ),
-                _NavItem(
-                  icon: Icons.person_outline_rounded,
-                  label: 'Profile',
-                  selected: _index == 4,
-                  onTap: () => setState(() => _index = 4),
+        return Scaffold(
+          backgroundColor: AppColors.softPink,
+          body: IndexedStack(index: _index, children: pages),
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 12,
+                  offset: const Offset(0, -2),
                 ),
               ],
             ),
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _NavItem(
+                      icon: Icons.home_rounded,
+                      label: 'Home',
+                      selected: _index == 0,
+                      onTap: () => setState(() => _index = 0),
+                    ),
+                    _NavItem(
+                      icon: Icons.favorite_outline,
+                      label: 'Journey',
+                      selected: _index == 1,
+                      onTap: () => setState(() => _index = 1),
+                    ),
+                    _NavItem(
+                      icon: Icons.local_florist_outlined,
+                      label: 'Tools',
+                      selected: _index == 2,
+                      onTap: () => setState(() => _index = 2),
+                    ),
+                    _NavItem(
+                      icon: Icons.forum_outlined,
+                      label: 'Community',
+                      selected: _index == 3,
+                      onTap: () => setState(() => _index = 3),
+                    ),
+                    _NavItem(
+                      icon: Icons.person_outline_rounded,
+                      label: 'Profile',
+                      selected: _index == 4,
+                      onTap: () => setState(() => _index = 4),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

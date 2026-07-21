@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../core/preferences/user_preferences.dart';
 import '../../core/theme/app_colors.dart';
+import 'pregnant_update_pregnancy_date_sheet.dart';
 
 class PregnantProfileScreen extends StatelessWidget {
   const PregnantProfileScreen({
@@ -12,8 +14,27 @@ class PregnantProfileScreen extends StatelessWidget {
   final String userName;
   final int weeksPregnant;
 
+  String _formatDate(DateTime date) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final dueDate = UserPreferences.instance.dueDate;
     return ListView(
       padding: EdgeInsets.zero,
       children: [
@@ -44,11 +65,12 @@ class PregnantProfileScreen extends StatelessWidget {
                       ),
                       const Spacer(),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () => showUpdatePregnancyDateSheet(context),
                         icon: const Icon(
-                          Icons.settings_outlined,
+                          Icons.edit_calendar_outlined,
                           color: Color(0xFF2C3A55),
                         ),
+                        tooltip: 'Update pregnancy date',
                       ),
                     ],
                   ),
@@ -78,7 +100,10 @@ class PregnantProfileScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: AppColors.magenta,
                             shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.white, width: 2),
+                            border: Border.all(
+                              color: AppColors.white,
+                              width: 2,
+                            ),
                           ),
                           child: const Icon(
                             Icons.camera_alt_rounded,
@@ -99,32 +124,44 @@ class PregnantProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      '$weeksPregnant Weeks Pregnant',
-                      style: const TextStyle(
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.magenta,
+                  InkWell(
+                    onTap: () => showUpdatePregnancyDateSheet(context),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '$weeksPregnant Weeks Pregnant',
+                            style: const TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.magenta,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Icon(
+                            Icons.edit_rounded,
+                            size: 14,
+                            color: AppColors.magenta,
+                          ),
+                        ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    'Growing a tiny miracle with love and care 💖🌸',
+                    'Growing a tiny miracle with love and care',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textMuted,
-                    ),
+                    style: TextStyle(fontSize: 13, color: AppColors.textMuted),
                   ),
                 ],
               ),
@@ -207,7 +244,7 @@ class PregnantProfileScreen extends StatelessWidget {
                   ),
                   const Spacer(),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () => showUpdatePregnancyDateSheet(context),
                     style: TextButton.styleFrom(
                       foregroundColor: AppColors.magenta,
                       padding: EdgeInsets.zero,
@@ -215,7 +252,7 @@ class PregnantProfileScreen extends StatelessWidget {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     child: const Text(
-                      'Edit',
+                      'Edit pregnancy',
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -234,21 +271,99 @@ class PregnantProfileScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Column(
+                child: Column(
                   children: [
-                    _InfoRow(icon: Icons.cake_outlined, label: 'Age', value: '24 years'),
-                    Divider(height: 1, indent: 56, color: Color(0xFFF3E8ED)),
-                    _InfoRow(icon: Icons.height_rounded, label: 'Height', value: '5 ft 3 in (160 cm)'),
-                    Divider(height: 1, indent: 56, color: Color(0xFFF3E8ED)),
-                    _InfoRow(icon: Icons.monitor_weight_outlined, label: 'Pre-pregnancy Weight', value: '60 kg'),
-                    Divider(height: 1, indent: 56, color: Color(0xFFF3E8ED)),
-                    _InfoRow(icon: Icons.monitor_weight_outlined, label: 'Current Weight', value: '63 kg'),
-                    Divider(height: 1, indent: 56, color: Color(0xFFF3E8ED)),
-                    _InfoRow(icon: Icons.bloodtype_outlined, label: 'Blood Group', value: 'B+'),
-                    Divider(height: 1, indent: 56, color: Color(0xFFF3E8ED)),
-                    _InfoRow(icon: Icons.event_outlined, label: 'Due Date', value: '25 Dec 2024'),
-                    Divider(height: 1, indent: 56, color: Color(0xFFF3E8ED)),
-                    _InfoRow(icon: Icons.location_on_outlined, label: 'Location', value: 'Lahore, Pakistan'),
+                    const _InfoRow(
+                      icon: Icons.cake_outlined,
+                      label: 'Age',
+                      value: '24 years',
+                    ),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: Color(0xFFF3E8ED),
+                    ),
+                    const _InfoRow(
+                      icon: Icons.height_rounded,
+                      label: 'Height',
+                      value: '5 ft 3 in (160 cm)',
+                    ),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: Color(0xFFF3E8ED),
+                    ),
+                    const _InfoRow(
+                      icon: Icons.monitor_weight_outlined,
+                      label: 'Pre-pregnancy Weight',
+                      value: '60 kg',
+                    ),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: Color(0xFFF3E8ED),
+                    ),
+                    const _InfoRow(
+                      icon: Icons.monitor_weight_outlined,
+                      label: 'Current Weight',
+                      value: '63 kg',
+                    ),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: Color(0xFFF3E8ED),
+                    ),
+                    const _InfoRow(
+                      icon: Icons.bloodtype_outlined,
+                      label: 'Blood Group',
+                      value: 'B+',
+                    ),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: Color(0xFFF3E8ED),
+                    ),
+                    InkWell(
+                      onTap: () => showUpdatePregnancyDateSheet(context),
+                      child: _InfoRow(
+                        icon: Icons.event_outlined,
+                        label: 'Due Date',
+                        value: _formatDate(dueDate),
+                        trailing: const Icon(
+                          Icons.edit_rounded,
+                          size: 16,
+                          color: AppColors.magenta,
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: Color(0xFFF3E8ED),
+                    ),
+                    InkWell(
+                      onTap: () => showUpdatePregnancyDateSheet(context),
+                      child: _InfoRow(
+                        icon: Icons.child_care_outlined,
+                        label: 'Pregnancy week',
+                        value: 'Week $weeksPregnant',
+                        trailing: const Icon(
+                          Icons.edit_rounded,
+                          size: 16,
+                          color: AppColors.magenta,
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: Color(0xFFF3E8ED),
+                    ),
+                    const _InfoRow(
+                      icon: Icons.location_on_outlined,
+                      label: 'Location',
+                      value: 'Lahore, Pakistan',
+                    ),
                   ],
                 ),
               ),
@@ -312,11 +427,13 @@ class _InfoRow extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.value,
+    this.trailing,
   });
 
   final IconData icon;
   final String label;
   final String value;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -337,10 +454,7 @@ class _InfoRow extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: const TextStyle(
-                fontSize: 13,
-                color: AppColors.textMuted,
-              ),
+              style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
             ),
           ),
           Flexible(
@@ -354,6 +468,7 @@ class _InfoRow extends StatelessWidget {
               ),
             ),
           ),
+          if (trailing != null) ...[const SizedBox(width: 6), trailing!],
         ],
       ),
     );

@@ -12,6 +12,7 @@ import 'pregnant_reminders_screen.dart';
 import 'pregnant_symptom_guide.dart';
 import 'pregnant_symptoms_screen.dart';
 import 'pregnant_todays_plan_screen.dart';
+import 'pregnant_update_pregnancy_date_sheet.dart';
 
 class PregnantHomeScreen extends StatefulWidget {
   const PregnantHomeScreen({
@@ -47,10 +48,7 @@ class _PregnantHomeScreenState extends State<PregnantHomeScreen> {
 
   int get _weeksToGo => (40 - widget.weeksPregnant).clamp(0, 40);
 
-  DateTime get _dueDate {
-    final remaining = _weeksToGo;
-    return DateTime.now().add(Duration(days: remaining * 7));
-  }
+  DateTime get _dueDate => UserPreferences.instance.dueDate;
 
   String _formatDate(DateTime date) {
     const months = [
@@ -374,11 +372,59 @@ class _PregnantHomeScreenState extends State<PregnantHomeScreen> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            Text(
-                              'Due date: ${_formatDate(_dueDate)}',
-                              style: const TextStyle(
-                                fontSize: 12.5,
-                                color: AppColors.textMuted,
+                            InkWell(
+                              onTap: () =>
+                                  showUpdatePregnancyDateSheet(context),
+                              borderRadius: BorderRadius.circular(8),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 2,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Due date: ${_formatDate(_dueDate)}',
+                                        style: const TextStyle(
+                                          fontSize: 12.5,
+                                          color: AppColors.textMuted,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.white,
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: AppColors.ringPink,
+                                        ),
+                                      ),
+                                      child: const Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.edit_calendar_outlined,
+                                            size: 14,
+                                            color: AppColors.magenta,
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            'Update',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w700,
+                                              color: AppColors.magenta,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             const SizedBox(height: 2),

@@ -47,6 +47,7 @@ class ReviewConfirmScreen extends StatelessWidget {
         );
         return;
       case 'pregnant':
+        UserPreferences.instance.ensureWeeksPregnant(weeksPregnant ?? 12);
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (_) => PregnantHomeShell(
@@ -78,9 +79,7 @@ class ReviewConfirmScreen extends StatelessWidget {
         return;
       default:
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('This journey home is coming soon.'),
-          ),
+          const SnackBar(content: Text('This journey home is coming soon.')),
         );
     }
   }
@@ -247,9 +246,11 @@ class ReviewConfirmScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 14),
-                            for (var i = 0;
-                                i < selectedPlan.features.length;
-                                i++) ...[
+                            for (
+                              var i = 0;
+                              i < selectedPlan.features.length;
+                              i++
+                            ) ...[
                               _BenefitRow(
                                 text: selectedPlan.features[i],
                                 trailingIcon:
@@ -403,10 +404,7 @@ class _SummaryRow extends StatelessWidget {
           Container(
             width: 42,
             height: 42,
-            decoration: BoxDecoration(
-              color: iconBg,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
             child: Icon(icon, color: iconColor, size: 22),
           ),
           const SizedBox(width: 12),
