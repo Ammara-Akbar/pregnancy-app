@@ -145,6 +145,7 @@ class _PregnantCommunityScreenState extends State<PregnantCommunityScreen> {
     return Scaffold(
       backgroundColor: AppColors.softPink,
       floatingActionButton: FloatingActionButton(
+        heroTag: 'pregnant_community_fab',
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

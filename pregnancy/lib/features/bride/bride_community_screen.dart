@@ -366,6 +366,7 @@ class _BrideCommunityScreenState extends State<BrideCommunityScreen> {
         return Scaffold(
           backgroundColor: const Color(0xFFFFF5F7),
           floatingActionButton: FloatingActionButton(
+            heroTag: 'bride_community_fab',
             onPressed: _createPost,
             backgroundColor: AppColors.magenta,
             child: const Icon(Icons.edit_rounded, color: Colors.white),

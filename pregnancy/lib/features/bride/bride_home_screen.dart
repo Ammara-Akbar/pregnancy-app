@@ -1,11 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-import '../../core/content/regional_content.dart';
-import '../../core/preferences/user_preferences.dart';
 import '../../core/theme/app_colors.dart';
-import 'bride_article_detail_screen.dart';
 import 'bride_articles_screen.dart';
 import 'bride_diet_nutrition_screen.dart';
+import 'bride_today_tasks_screen.dart';
+import 'bride_plan_task.dart';
 import 'bride_wellness_screen.dart';
 
 class BrideHomeScreen extends StatefulWidget {
@@ -18,292 +19,376 @@ class BrideHomeScreen extends StatefulWidget {
 }
 
 class _BrideHomeScreenState extends State<BrideHomeScreen> {
-  late final List<_TaskItem> _tasks = [
-    _TaskItem('Take Folic Acid', Icons.medication_rounded, const Color(0xFF4CAF7A), true),
-    _TaskItem('Drink 8 glasses of water', Icons.local_drink_rounded, const Color(0xFF5BA8D9), true),
-    _TaskItem('30 min walk', Icons.directions_walk_rounded, AppColors.magenta, false),
-    _TaskItem('Eat iron rich breakfast', Icons.rice_bowl_rounded, const Color(0xFFE07A4A), false),
-    _TaskItem('10 min meditation', Icons.self_improvement_rounded, AppColors.magenta, false),
+  late final List<_PlanTask> _tasks = [
+    _PlanTask(
+      title: 'Drink 8 glasses of water',
+      subtitle: '6 / 8 completed',
+      icon: Icons.local_drink_rounded,
+      color: AppColors.magenta,
+      progress: 0.75,
+      done: false,
+    ),
+    _PlanTask(
+      title: '15 mins Morning Yoga',
+      subtitle: 'Pending',
+      icon: Icons.self_improvement_rounded,
+      color: const Color(0xFF8B6BA8),
+      done: false,
+    ),
+    _PlanTask(
+      title: 'Eat healthy & balanced meals',
+      subtitle: 'Completed',
+      icon: Icons.rice_bowl_rounded,
+      color: const Color(0xFF4CAF7A),
+      done: true,
+    ),
+    _PlanTask(
+      title: 'Journal your thoughts',
+      subtitle: 'Pending',
+      icon: Icons.menu_book_rounded,
+      color: const Color(0xFFE07A4A),
+      done: false,
+    ),
   ];
 
-  int get _completedCount => _tasks.where((t) => t.done).length;
+  late DateTime _milestoneAt;
+  Timer? _timer;
+  Duration _remaining = Duration.zero;
 
   String get _greeting {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return 'Good Morning,';
+    if (hour < 17) return 'Good Afternoon,';
+    return 'Good Evening,';
+  }
+
+  String get _displayName {
+    final name = widget.userName.trim();
+    if (name.contains(' ')) return name;
+    return '$name Khan';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _milestoneAt = DateTime.now().add(
+      const Duration(days: 32, hours: 14, minutes: 48, seconds: 20),
+    );
+    _tick();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+  }
+
+  void _tick() {
+    final remaining = _milestoneAt.difference(DateTime.now());
+    if (!mounted) return;
+    setState(() {
+      _remaining = remaining.isNegative ? Duration.zero : remaining;
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _openTodayPlan() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => BrideTodayTasksScreen(
+          tasks: BridePlanTask.defaults,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _TopBar(),
-                  const SizedBox(height: 18),
-                  Text(
-                    '$_greeting, ${widget.userName} 🌸',
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF2C3A55),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const _PlanProgressCard(),
-                  const SizedBox(height: 22),
-                  Row(
-                    children: [
-                      const Text(
-                        "Today's Tasks",
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF2C3A55),
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        '$_completedCount / ${_tasks.length} completed',
-                        style: const TextStyle(
-                          fontSize: 12.5,
-                          color: AppColors.textMuted,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _TasksCard(
-                    tasks: _tasks,
-                    onToggle: (i) {
-                      setState(() => _tasks[i].done = !_tasks[i].done);
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  const _DailyTipCard(),
-                  const SizedBox(height: 12),
-                  const _WellnessHubCard(),
-                  const SizedBox(height: 22),
-                  _SectionHeader(
-                    title: 'Diet & Nutrition',
-                    action: 'See all',
-                    onAction: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const BrideDietNutritionScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  const _DietPlanCard(),
-                  const SizedBox(height: 22),
-                  const _SectionHeader(
-                    title: 'Your Progress',
-                    action: 'This Week',
-                    actionMuted: true,
-                  ),
-                  const SizedBox(height: 12),
-                  const _WeeklyProgressRow(),
-                  const SizedBox(height: 22),
-                  _SectionHeader(
-                    title: 'Articles for You',
-                    action: 'See all',
-                    onAction: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const BrideArticlesScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  const _ArticleCard(),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+        children: [
+          _Header(
+            greeting: _greeting,
+            name: _displayName,
           ),
+          const SizedBox(height: 16),
+          const _PromoBanner(),
+          const SizedBox(height: 14),
+          const _StatsRow(),
+          const SizedBox(height: 20),
+          _SectionTitle(
+            title: "Today's Plan",
+            action: 'View all',
+            onAction: _openTodayPlan,
+          ),
+          const SizedBox(height: 10),
+          _TodayPlanCard(
+            tasks: _tasks,
+            onToggle: (index) {
+              setState(() {
+                final task = _tasks[index];
+                task.done = !task.done;
+                if (task.done) {
+                  task.subtitle = 'Completed';
+                  task.progress = 1;
+                } else if (task.title.contains('water')) {
+                  task.subtitle = '6 / 8 completed';
+                  task.progress = 0.75;
+                } else {
+                  task.subtitle = 'Pending';
+                  task.progress = null;
+                }
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+          _MilestoneTipCarousel(remaining: _remaining),
+          const SizedBox(height: 20),
+          _SectionTitle(
+            title: 'Explore For You',
+            action: 'View all',
+            onAction: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const BrideWellnessScreen(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
+          _ExploreGrid(
+            onTap: (label) {
+              if (label == 'Diet Plan') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const BrideDietNutritionScreen(),
+                  ),
+                );
+              } else if (label == 'Workout' || label == 'Skincare') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const BrideWellnessScreen(),
+                  ),
+                );
+              } else if (label == 'Checklist') {
+                _openTodayPlan();
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: AppColors.magenta,
+                    content: Text('$label coming soon'),
+                  ),
+                );
+              }
+            },
+          ),
+          const SizedBox(height: 20),
+          _SectionTitle(
+            title: 'Featured For You',
+            action: 'View all',
+            onAction: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const BrideArticlesScreen(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
+          const _FeaturedRow(),
         ],
       ),
     );
   }
 }
 
-class _TopBar extends StatelessWidget {
+class _PlanTask {
+  _PlanTask({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.done,
+    this.progress,
+  });
+
+  final String title;
+  String subtitle;
+  final IconData icon;
+  final Color color;
+  bool done;
+  double? progress;
+}
+
+class _Header extends StatelessWidget {
+  const _Header({required this.greeting, required this.name});
+
+  final String greeting;
+  final String name;
+
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Spacer(),
-        Container(
-          width: 28,
-          height: 28,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [Color(0xFFE89AB8), AppColors.magenta],
-            ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                greeting,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textDark,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.magenta,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Bride-to-Be',
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.burgundy,
+                ),
+              ),
+              const SizedBox(height: 2),
+              const Text(
+                "Let's plan your beautiful beginning",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textMuted,
+                ),
+              ),
+            ],
           ),
-          child: const Icon(Icons.favorite, color: Colors.white, size: 14),
         ),
-        const SizedBox(width: 8),
-        const Text(
-          'Sehat Maa',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.magenta,
-          ),
-        ),
-        const Spacer(),
         Stack(
           children: [
             IconButton(
               onPressed: () {},
               icon: const Icon(
                 Icons.notifications_none_rounded,
-                color: Color(0xFF2C3A55),
+                color: AppColors.burgundy,
               ),
             ),
             Positioned(
-              right: 12,
-              top: 12,
+              right: 10,
+              top: 10,
               child: Container(
-                width: 8,
-                height: 8,
+                padding: const EdgeInsets.all(3),
                 decoration: const BoxDecoration(
                   color: Color(0xFFE53935),
                   shape: BoxShape.circle,
                 ),
+                constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                child: const Text(
+                  '3',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
           ],
+        ),
+        const SizedBox(width: 4),
+        CircleAvatar(
+          radius: 22,
+          backgroundColor: AppColors.blush,
+          backgroundImage: const AssetImage('assets/images/journey_bride.png'),
+          onBackgroundImageError: (exception, stackTrace) {},
         ),
       ],
     );
   }
 }
 
-class _PlanProgressCard extends StatelessWidget {
-  const _PlanProgressCard();
+class _PromoBanner extends StatelessWidget {
+  const _PromoBanner();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      height: 148,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFFFF0F5), Color(0xFFF8D7E4)],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.magenta.withValues(alpha: 0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: const Color(0xFFFDE2E8),
+        borderRadius: BorderRadius.circular(24),
       ),
-      child: Column(
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Your Pre-Marriage Plan',
-                      style: TextStyle(
-                        fontSize: 15.5,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF2C3A55),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      "You're doing great! Keep going and build a healthy future.",
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        color: AppColors.textMuted,
-                        height: 1.4,
-                      ),
-                    ),
+          Positioned(
+            right: -8,
+            top: 0,
+            bottom: 0,
+            width: 168,
+            child: Image.asset(
+              'assets/images/bride_home_banner.png',
+              fit: BoxFit.cover,
+              alignment: Alignment.centerRight,
+              errorBuilder: (context, error, stackTrace) => Image.asset(
+                'assets/images/journey_bride.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    const Color(0xFFFDE2E8),
+                    const Color(0xFFFDE2E8).withValues(alpha: 0.92),
+                    const Color(0xFFFDE2E8).withValues(alpha: 0.35),
+                    Colors.transparent,
                   ],
+                  stops: const [0.0, 0.42, 0.62, 0.82],
                 ),
               ),
-              const SizedBox(width: 8),
-              Column(
-                children: [
-                  const Text(
-                    'Day 12 of 90',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.magenta,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: 72,
-                    height: 72,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          value: 0.13,
-                          strokeWidth: 7,
-                          backgroundColor: AppColors.white.withValues(alpha: 0.7),
-                          color: AppColors.magenta,
-                        ),
-                        const Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '13%',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xFF2C3A55),
-                              ),
-                            ),
-                            Text(
-                              'Complete',
-                              style: TextStyle(
-                                fontSize: 9,
-                                color: AppColors.textMuted,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
-          const SizedBox(height: 14),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: const LinearProgressIndicator(
-              value: 0.13,
-              minHeight: 6,
-              backgroundColor: Color(0xFFF0C8D8),
-              color: AppColors.magenta,
+          const Padding(
+            padding: EdgeInsets.fromLTRB(18, 22, 140, 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'A beautiful journey begins with self-love 💗',
+                  style: TextStyle(
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF2D2A32),
+                    height: 1.28,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Take care of yourself today for a happier tomorrow.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.4,
+                    color: Color(0xFF8A8490),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -312,19 +397,208 @@ class _PlanProgressCard extends StatelessWidget {
   }
 }
 
-class _TaskItem {
-  _TaskItem(this.title, this.icon, this.iconColor, this.done);
+class _StatsRow extends StatelessWidget {
+  const _StatsRow();
 
-  final String title;
-  final IconData icon;
-  final Color iconColor;
-  bool done;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: const IntrinsicHeight(
+        child: Row(
+          children: [
+            Expanded(
+              child: _StatCell(
+                icon: Icons.calendar_month_rounded,
+                value: '240',
+                caption: 'Days to go',
+                label: 'To Wedding',
+                color: Color(0xFFE91E63),
+              ),
+            ),
+            _StatDivider(),
+            Expanded(
+              child: _StatCell(
+                icon: Icons.assignment_outlined,
+                value: '5 / 12',
+                caption: 'Tasks Done',
+                label: 'This Week',
+                color: Color(0xFF9C27B0),
+              ),
+            ),
+            _StatDivider(),
+            Expanded(
+              child: _StatCell(
+                icon: Icons.favorite_border_rounded,
+                value: '82%',
+                caption: 'Wellness Score',
+                label: 'Great!',
+                color: Color(0xFFFF9800),
+              ),
+            ),
+            _StatDivider(),
+            Expanded(
+              child: _StatCell(
+                icon: Icons.event_available_rounded,
+                value: '3',
+                caption: 'Appointments',
+                label: 'Upcoming',
+                color: Color(0xFF4CAF50),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _TasksCard extends StatelessWidget {
-  const _TasksCard({required this.tasks, required this.onToggle});
+class _StatDivider extends StatelessWidget {
+  const _StatDivider();
 
-  final List<_TaskItem> tasks;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 1,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      color: const Color(0xFFECE8ED),
+    );
+  }
+}
+
+class _StatCell extends StatelessWidget {
+  const _StatCell({
+    required this.icon,
+    required this.value,
+    required this.caption,
+    required this.label,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String value;
+  final String caption;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 18),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF2D2A32),
+              height: 1.1,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            caption,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF9A94A0),
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              color: color,
+              height: 1.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({
+    required this.title,
+    required this.action,
+    required this.onAction,
+  });
+
+  final String title;
+  final String action;
+  final VoidCallback onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textDark,
+          ),
+        ),
+        const Spacer(),
+        TextButton(
+          onPressed: onAction,
+          style: TextButton.styleFrom(
+            foregroundColor: AppColors.magenta,
+            padding: EdgeInsets.zero,
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          child: Text(
+            action,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TodayPlanCard extends StatelessWidget {
+  const _TodayPlanCard({required this.tasks, required this.onToggle});
+
+  final List<_PlanTask> tasks;
   final ValueChanged<int> onToggle;
 
   @override
@@ -333,84 +607,253 @@ class _TasksCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        border: Border.all(color: AppColors.mistPink),
       ),
       child: Column(
         children: [
           for (var i = 0; i < tasks.length; i++) ...[
             InkWell(
               onTap: () => onToggle(i),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
                 child: Row(
                   children: [
                     Container(
-                      width: 36,
-                      height: 36,
+                      width: 40,
+                      height: 40,
                       decoration: BoxDecoration(
-                        color: tasks[i].iconColor.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(10),
+                        color: tasks[i].color.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(
-                        tasks[i].icon,
-                        color: tasks[i].iconColor,
-                        size: 20,
-                      ),
+                      child: Icon(tasks[i].icon, color: tasks[i].color),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(
-                        tasks[i].title,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF2C3A55),
-                          decoration: tasks[i].done
-                              ? TextDecoration.lineThrough
-                              : null,
-                          decorationColor: AppColors.textMuted,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            tasks[i].title,
+                            style: TextStyle(
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textDark,
+                              decoration: tasks[i].done
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            tasks[i].subtitle,
+                            style: TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w600,
+                              color: tasks[i].color,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: tasks[i].done
-                            ? AppColors.magenta
-                            : Colors.transparent,
-                        border: Border.all(
+                    if (tasks[i].progress != null)
+                      SizedBox(
+                        width: 42,
+                        height: 42,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            CircularProgressIndicator(
+                              value: tasks[i].progress,
+                              strokeWidth: 4,
+                              backgroundColor: AppColors.ringPink,
+                              color: AppColors.magenta,
+                            ),
+                            Text(
+                              '${((tasks[i].progress ?? 0) * 100).round()}%',
+                              style: const TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.magenta,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    else
+                      Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
                           color: tasks[i].done
-                              ? AppColors.magenta
-                              : AppColors.ringPink,
-                          width: 2,
+                              ? tasks[i].color
+                              : Colors.transparent,
+                          border: Border.all(
+                            color: tasks[i].done
+                                ? tasks[i].color
+                                : AppColors.skipGrey,
+                            width: tasks[i].done ? 0 : 1.6,
+                          ),
                         ),
+                        child: tasks[i].done
+                            ? const Icon(
+                                Icons.check_rounded,
+                                size: 14,
+                                color: AppColors.white,
+                              )
+                            : null,
                       ),
-                      child: tasks[i].done
-                          ? const Icon(
-                              Icons.check,
-                              size: 14,
-                              color: Colors.white,
-                            )
-                          : null,
-                    ),
                   ],
                 ),
               ),
             ),
             if (i < tasks.length - 1)
-              const Divider(height: 1, indent: 62, color: Color(0xFFF3E8ED)),
+              const Divider(height: 1, indent: 66, color: Color(0xFFF3E8ED)),
           ],
         ],
       ),
+    );
+  }
+}
+
+class _MilestoneTipCarousel extends StatelessWidget {
+  const _MilestoneTipCarousel({required this.remaining});
+
+  final Duration remaining;
+
+  @override
+  Widget build(BuildContext context) {
+    final cardWidth = MediaQuery.sizeOf(context).width * 0.72;
+
+    return SizedBox(
+      height: 150,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        children: [
+          SizedBox(
+            width: cardWidth,
+            child: _MilestoneCard(remaining: remaining),
+          ),
+          const SizedBox(width: 12),
+          SizedBox(
+            width: cardWidth,
+            child: const _DailyTipCard(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MilestoneCard extends StatelessWidget {
+  const _MilestoneCard({required this.remaining});
+
+  final Duration remaining;
+
+  @override
+  Widget build(BuildContext context) {
+    final days = remaining.inDays;
+    final hours = remaining.inHours % 24;
+    final mins = remaining.inMinutes % 60;
+    final secs = remaining.inSeconds % 60;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFFDE8EE),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 14, 8, 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Next Milestone',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF3A2F36),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Mehndi Function',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF2D2A32),
+                    ),
+                  ),
+                  const Spacer(),
+                  Row(
+                    children: [
+                      _TimeBlock(value: '$days', label: 'Days'),
+                      const SizedBox(width: 14),
+                      _TimeBlock(value: '$hours', label: 'Hours'),
+                      const SizedBox(width: 14),
+                      _TimeBlock(value: '$mins', label: 'Mins'),
+                      const SizedBox(width: 14),
+                      _TimeBlock(value: '$secs', label: 'Secs'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 6, bottom: 4, top: 8),
+            child: Image.asset(
+              'assets/images/bride_mehndi_milestone.png',
+              width: 108,
+              height: 128,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TimeBlock extends StatelessWidget {
+  const _TimeBlock({required this.value, required this.label});
+
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFFE91E63),
+            height: 1,
+          ),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 10,
+            color: Color(0xFF9A8A92),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -421,53 +864,84 @@ class _DailyTipCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
+        color: const Color(0xFFFDE8EE),
         borderRadius: BorderRadius.circular(18),
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFFF0F5), Color(0xFFF8D7E4)],
-        ),
       ),
+      clipBehavior: Clip.antiAlias,
       child: Row(
         children: [
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Daily Tip',
-                  style: TextStyle(
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF2C3A55),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 14, 8, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '💡 Daily Tip',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF2D2A32),
+                    ),
                   ),
-                ),
-                SizedBox(height: 6),
-                Text(
-                  'Start your day with warm water and soaked almonds for glowing skin and better health.',
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    color: AppColors.textMuted,
-                    height: 1.4,
+                  const SizedBox(height: 8),
+                  const Expanded(
+                    child: Text(
+                      'Take time for yourself today. A little self-care goes a long way.',
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        height: 1.35,
+                        color: Color(0xFF2D2A32),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const BrideArticlesScreen(),
+                        ),
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFFE91E63),
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(
+                        color: Color(0xFFE91E63),
+                        width: 1.2,
+                      ),
+                      minimumSize: const Size(0, 30),
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      visualDensity: VisualDensity.compact,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Read More',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(width: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+          Padding(
+            padding: const EdgeInsets.only(right: 4, bottom: 2, top: 6),
             child: Image.asset(
-              'assets/images/tip_almonds.png',
-              width: 72,
-              height: 72,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                width: 72,
-                height: 72,
-                color: AppColors.blush,
-                child: const Icon(Icons.eco, color: AppColors.magenta),
-              ),
+              'assets/images/bride_daily_tip.png',
+              width: 108,
+              height: 128,
+              fit: BoxFit.contain,
             ),
           ),
         ],
@@ -476,368 +950,197 @@ class _DailyTipCard extends StatelessWidget {
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.title,
-    required this.action,
-    this.actionMuted = false,
-    this.onAction,
-  });
+class _ExploreGrid extends StatelessWidget {
+  const _ExploreGrid({required this.onTap});
 
-  final String title;
-  final String action;
-  final bool actionMuted;
-  final VoidCallback? onAction;
+  final ValueChanged<String> onTap;
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF2C3A55),
-          ),
-        ),
-        const Spacer(),
-        GestureDetector(
-          onTap: onAction,
-          child: Text(
-            action,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: actionMuted ? AppColors.textMuted : AppColors.magenta,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _DietPlanCard extends StatelessWidget {
-  const _DietPlanCard();
-
-  static const _colors = [
-    Color(0xFFFFB74D),
-    Color(0xFF81C784),
-    Color(0xFFFF8A65),
-    Color(0xFF64B5F6),
+  static const _items = [
+    (
+      'Checklist',
+      'assets/images/bride_explore_checklist.png',
+      Color(0xFFFCE4EC),
+    ),
+    (
+      'Diet Plan',
+      'assets/images/bride_explore_diet.png',
+      Color(0xFFE8F5E9),
+    ),
+    (
+      'Workout',
+      'assets/images/bride_explore_workout.png',
+      Color(0xFFF3E5F5),
+    ),
+    (
+      'Skincare',
+      'assets/images/bride_explore_skincare.png',
+      Color(0xFFFCE4EC),
+    ),
+    (
+      'Venues',
+      'assets/images/bride_explore_venues.png',
+      Color(0xFFFFF3E0),
+    ),
+    (
+      'Budget Planner',
+      'assets/images/bride_explore_budget.png',
+      Color(0xFFF3E5F5),
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: UserPreferences.instance,
-      builder: (context, _) {
-        final meals = RegionalContent.brideHomeMeals();
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.white,
+    return SizedBox(
+      height: 98,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: _items.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 14),
+        itemBuilder: (context, index) {
+          final item = _items[index];
+          return InkWell(
+            onTap: () => onTap(item.$1),
             borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
+            child: SizedBox(
+              width: 72,
+              child: Column(
+                children: [
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      color: item.$3,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.asset(
+                      item.$2,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    item.$1,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF3A2F36),
+                      height: 1.15,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Column(
-            children: [
-              for (var i = 0; i < meals.length; i++) ...[
-                Row(
-                  children: [
-                    Expanded(
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _FeaturedRow extends StatelessWidget {
+  const _FeaturedRow();
+
+  static const _cards = [
+    (
+      'Bridal Skincare Guide',
+      'Get that natural glow',
+      'assets/images/bride_featured_skincare.png',
+    ),
+    (
+      'Stress Management',
+      'Stay calm & enjoy the journey',
+      'assets/images/bride_featured_stress.png',
+    ),
+    (
+      'Wedding Checklist',
+      "Don't miss anything important",
+      'assets/images/bride_featured_checklist.png',
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final cardWidth = MediaQuery.sizeOf(context).width * 0.72;
+
+    return SizedBox(
+      height: 118,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: _cards.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          final card = _cards[index];
+          return InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const BrideArticlesScreen(),
+                ),
+              );
+            },
+            borderRadius: BorderRadius.circular(18),
+            child: Container(
+              width: cardWidth,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFDE8EE),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            meals[i].$1,
+                            card.$1,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF2C3A55),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF2D2A32),
+                              height: 1.2,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: 6),
                           Text(
-                            meals[i].$2,
+                            card.$2,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                              fontSize: 12.5,
-                              color: AppColors.textMuted,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF8A8490),
+                              height: 1.3,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _colors[i].withValues(alpha: 0.2),
-                      ),
-                      child: Icon(
-                        Icons.restaurant_rounded,
-                        color: _colors[i],
-                        size: 22,
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 6, top: 6, bottom: 6),
+                    child: Image.asset(
+                      card.$3,
+                      width: 112,
+                      height: 106,
+                      fit: BoxFit.contain,
                     ),
-                  ],
-                ),
-                if (i < meals.length - 1) const SizedBox(height: 14),
-              ],
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _WeeklyProgressRow extends StatelessWidget {
-  const _WeeklyProgressRow();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        Expanded(
-          child: _ProgressMiniCard(
-            label: 'Water',
-            value: '6 / 8 glasses',
-            icon: Icons.local_drink_rounded,
-            color: Color(0xFF5BA8D9),
-            progress: 6 / 8,
-          ),
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: _ProgressMiniCard(
-            label: 'Walk',
-            value: '4 / 7 days',
-            icon: Icons.directions_walk_rounded,
-            color: Color(0xFF66BB6A),
-            progress: 4 / 7,
-          ),
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: _ProgressMiniCard(
-            label: 'Folic Acid',
-            value: '7 / 7 days',
-            icon: Icons.medication_rounded,
-            color: AppColors.magenta,
-            progress: 1,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ProgressMiniCard extends StatelessWidget {
-  const _ProgressMiniCard({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-    required this.progress,
-  });
-
-  final String label;
-  final String value;
-  final IconData icon;
-  final Color color;
-  final double progress;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          SizedBox(
-            width: 52,
-            height: 52,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                CircularProgressIndicator(
-                  value: progress,
-                  strokeWidth: 5,
-                  backgroundColor: color.withValues(alpha: 0.15),
-                  color: color,
-                ),
-                Icon(icon, color: color, size: 22),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF2C3A55),
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            value,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 10.5, color: AppColors.textMuted),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _WellnessHubCard extends StatelessWidget {
-  const _WellnessHubCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const BrideWellnessScreen()),
-          );
-        },
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFF0E4EA)),
-          ),
-          child: const Row(
-            children: [
-              Icon(Icons.spa_outlined, color: AppColors.magenta, size: 22),
-              SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Bride Wellness Hub',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF2C3A55),
-                      ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      'Fitness, glow care, stress tips & more',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textMuted,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Icon(Icons.chevron_right_rounded, color: AppColors.skipGrey),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ArticleCard extends StatelessWidget {
-  const _ArticleCard();
-
-  @override
-  Widget build(BuildContext context) {
-    final article = brideArticles.first;
-
-    return Material(
-      color: AppColors.white,
-      borderRadius: BorderRadius.circular(18),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => BrideArticleDetailScreen(article: article),
             ),
           );
         },
-        borderRadius: BorderRadius.circular(18),
-        child: Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      article.title,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF2C3A55),
-                        height: 1.3,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      article.readTime,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textMuted,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  article.imageAsset,
-                  width: 72,
-                  height: 64,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -341,6 +341,7 @@ class _PregnantHospitalBagScreenState extends State<PregnantHospitalBagScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F5F8),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'hospital_bag_shopping_fab',
         onPressed: _openShoppingList,
         backgroundColor: AppColors.magenta,
         child: const Icon(Icons.shopping_bag_outlined, color: AppColors.white),

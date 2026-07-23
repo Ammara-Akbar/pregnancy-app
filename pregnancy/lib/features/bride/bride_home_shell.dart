@@ -25,11 +25,12 @@ class _BrideHomeShellState extends State<BrideHomeShell> {
         ? widget.userName
         : '${widget.userName} Khan';
 
+    // Matches design: Home · Journey · Tools · Community · Profile
     final pages = [
       BrideHomeScreen(userName: widget.userName),
       BrideMyPlanScreen(onBack: () => setState(() => _index = 0)),
-      const BrideCommunityScreen(),
       const BrideReportsScreen(),
+      const BrideCommunityScreen(),
       BrideProfileScreen(userName: fullName),
     ];
 
@@ -61,20 +62,20 @@ class _BrideHomeShellState extends State<BrideHomeShell> {
                   onTap: () => setState(() => _index = 0),
                 ),
                 _NavItem(
-                  icon: Icons.calendar_month_outlined,
-                  label: 'Plan',
+                  icon: Icons.favorite_outline,
+                  label: 'Journey',
                   selected: _index == 1,
                   onTap: () => setState(() => _index = 1),
                 ),
                 _NavItem(
-                  icon: Icons.groups_outlined,
-                  label: 'Community',
+                  icon: Icons.work_outline_rounded,
+                  label: 'Tools',
                   selected: _index == 2,
                   onTap: () => setState(() => _index = 2),
                 ),
                 _NavItem(
-                  icon: Icons.bar_chart_rounded,
-                  label: 'Reports',
+                  icon: Icons.groups_outlined,
+                  label: 'Community',
                   selected: _index == 3,
                   onTap: () => setState(() => _index = 3),
                 ),
