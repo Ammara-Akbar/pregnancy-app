@@ -5,7 +5,7 @@ import 'bride_community_screen.dart';
 import 'bride_home_screen.dart';
 import 'bride_journey_screen.dart';
 import 'bride_profile_screen.dart';
-import 'bride_reports_screen.dart';
+import 'bride_tools_screen.dart';
 
 class BrideHomeShell extends StatefulWidget {
   const BrideHomeShell({super.key, this.userName = 'Ayesha'});
@@ -29,7 +29,7 @@ class _BrideHomeShellState extends State<BrideHomeShell> {
     final pages = [
       BrideHomeScreen(userName: widget.userName),
       const BrideJourneyScreen(),
-      const BrideReportsScreen(),
+      const BrideToolsScreen(),
       const BrideCommunityScreen(),
       BrideProfileScreen(userName: fullName),
     ];
