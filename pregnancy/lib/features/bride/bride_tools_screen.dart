@@ -5,9 +5,16 @@ import 'bride_diet_nutrition_screen.dart';
 import 'bride_today_tasks_screen.dart';
 import 'bride_plan_task.dart';
 import 'bride_wellness_screen.dart';
+import 'health_checkup/screens/health_checkup_dashboard_screen.dart';
 
 class BrideToolsScreen extends StatelessWidget {
   const BrideToolsScreen({super.key});
+
+  void _openHealthCheckup(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const BrideHealthCheckupFlow()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +59,10 @@ class BrideToolsScreen extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 16),
+          PreMarriageHealthHomeCard(
+            onContinue: () => _openHealthCheckup(context),
           ),
           const SizedBox(height: 22),
           _ToolSection(
@@ -119,6 +130,10 @@ class BrideToolsScreen extends StatelessWidget {
                 'Budget Planner',
                 'assets/images/bride_tool_budget.png',
               ),
+              _ToolItem(
+                'Pre-Marriage Health',
+                'assets/images/bride_tool_health.png',
+              ),
             ],
             onTap: (label) => _openTool(context, label),
           ),
@@ -130,6 +145,11 @@ class BrideToolsScreen extends StatelessWidget {
   }
 
   void _openTool(BuildContext context, String label) {
+    if (label == 'Health Trackers' || label == 'Pre-Marriage Health') {
+      _openHealthCheckup(context);
+      return;
+    }
+
     Widget? page;
     switch (label) {
       case 'Nutrition Guide':
@@ -139,7 +159,6 @@ class BrideToolsScreen extends StatelessWidget {
       case 'Skin Care Guide':
       case 'Hair Care Tips':
       case 'Glow Tracker':
-      case 'Health Trackers':
       case 'Sleep Tracker':
       case 'Vitamins & Supplements':
       case 'Cycle & Ovulation':

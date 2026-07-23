@@ -113,7 +113,7 @@ class _BrideHomeScreenState extends State<BrideHomeScreen> {
             name: _displayName,
           ),
           const SizedBox(height: 16),
-          const _PromoBanner(),
+          const _JourneyOverviewCard(),
           const SizedBox(height: 14),
           const _StatsRow(),
           const SizedBox(height: 20),
@@ -318,78 +318,159 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _PromoBanner extends StatelessWidget {
-  const _PromoBanner();
+class _JourneyOverviewCard extends StatelessWidget {
+  const _JourneyOverviewCard();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 148,
+      padding: const EdgeInsets.fromLTRB(12, 12, 6, 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFFDE2E8),
+        color: const Color(0xFFFDE8EE),
         borderRadius: BorderRadius.circular(24),
       ),
       clipBehavior: Clip.antiAlias,
-      child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Positioned(
-            right: -8,
-            top: 0,
-            bottom: 0,
-            width: 168,
-            child: Image.asset(
-              'assets/images/bride_home_banner.png',
-              fit: BoxFit.cover,
-              alignment: Alignment.centerRight,
-              errorBuilder: (context, error, stackTrace) => Image.asset(
-                'assets/images/journey_bride.png',
-                fit: BoxFit.cover,
-              ),
+          const Text(
+            'Your Journey Overview',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF1A1C3D),
             ),
           ),
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    const Color(0xFFFDE2E8),
-                    const Color(0xFFFDE2E8).withValues(alpha: 0.92),
-                    const Color(0xFFFDE2E8).withValues(alpha: 0.35),
-                    Colors.transparent,
+          const SizedBox(height: 10),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const Expanded(
+                child: _OverviewMetricCard(
+                  title: 'Wedding',
+                  subtitle: '15 Dec 2024',
+                  metric: '208',
+                  footer: 'Days to go',
+                  icon: Icons.favorite_border_rounded,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: _OverviewMetricCard(
+                  title: 'Next Period',
+                  subtitle: 'Expected on 20 Jun 2024',
+                  metric: '5',
+                  footer: 'Days to go',
+                  icon: Icons.water_drop_outlined,
+                ),
+              ),
+              const SizedBox(width: 2),
+              SizedBox(
+                width: 92,
+                height: 118,
+                child: Image.asset(
+                  'assets/images/bride_journey_overview_girl.png',
+                  fit: BoxFit.contain,
+                  alignment: Alignment.bottomCenter,
+                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                    'assets/images/bride_home_banner.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OverviewMetricCard extends StatelessWidget {
+  const _OverviewMetricCard({
+    required this.title,
+    required this.subtitle,
+    required this.metric,
+    required this.footer,
+    required this.icon,
+  });
+
+  final String title;
+  final String subtitle;
+  final String metric;
+  final String footer;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 10, 8, 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF1A1C3D),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            subtitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 9.5,
+              color: Color(0xFF9A94A0),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      metric,
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFFF96C8C),
+                        height: 1,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      footer,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFF9A94A0),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
-                  stops: const [0.0, 0.42, 0.62, 0.82],
                 ),
               ),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(18, 22, 140, 18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'A beautiful journey begins with self-love 💗',
-                  style: TextStyle(
-                    fontSize: 16.5,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF2D2A32),
-                    height: 1.28,
-                  ),
+              Container(
+                width: 28,
+                height: 28,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFFE4EC),
+                  shape: BoxShape.circle,
                 ),
-                SizedBox(height: 8),
-                Text(
-                  'Take care of yourself today for a happier tomorrow.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    height: 1.4,
-                    color: Color(0xFF8A8490),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
+                child: Icon(icon, size: 14, color: const Color(0xFFF96C8C)),
+              ),
+            ],
           ),
         ],
       ),
