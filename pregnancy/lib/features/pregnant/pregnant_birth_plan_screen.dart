@@ -2,18 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 
-class _PlanQuestion {
-  const _PlanQuestion({
-    required this.title,
-    required this.icon,
-    required this.options,
-  });
-
-  final String title;
-  final IconData icon;
-  final List<String> options;
-}
-
 class PregnantBirthPlanScreen extends StatefulWidget {
   const PregnantBirthPlanScreen({super.key});
 
@@ -23,288 +11,301 @@ class PregnantBirthPlanScreen extends StatefulWidget {
 }
 
 class _PregnantBirthPlanScreenState extends State<PregnantBirthPlanScreen> {
-  static const _questions = [
-    _PlanQuestion(
-      title: 'Birth Environment',
-      icon: Icons.light_mode_outlined,
-      options: ['Dim lights', 'Soft music', 'Quiet room', 'No preference'],
-    ),
-    _PlanQuestion(
-      title: 'Pain Relief',
-      icon: Icons.spa_outlined,
-      options: [
-        'Epidural',
-        'Breathing techniques',
-        'Massage',
-        'Decide during labor',
-      ],
-    ),
-    _PlanQuestion(
-      title: 'During Labor',
-      icon: Icons.directions_walk_rounded,
-      options: ['Move freely', 'Birthing ball', 'Water birth', 'Rest in bed'],
-    ),
-    _PlanQuestion(
-      title: 'Delivery Moments',
-      icon: Icons.favorite_outline_rounded,
-      options: [
-        'Partner present',
-        'Skin-to-skin right away',
-        'Partner cuts the cord',
-        'Delayed cord clamping',
-      ],
-    ),
-    _PlanQuestion(
-      title: 'After Birth',
-      icon: Icons.child_care_rounded,
-      options: [
-        'Breastfeed right away',
-        'Formula feeding',
-        'Mixed feeding',
-        'Decide later',
-      ],
-    ),
-  ];
+  String _delivery = 'Vaginal Delivery';
+  String _painRelief = 'Epidural';
 
-  final Map<String, String> _choices = {};
+  final Map<String, String> _labor = {
+    'I would like updates about my labor progress.': 'Yes',
+    'I want to move around during labor.': 'Yes',
+    'I prefer dim lights and a quiet environment.': 'Yes',
+    'I want my partner / support person with me.': 'Yes',
+  };
+
+  final Map<String, String> _deliveryPrefs = {
+    'I would like immediate skin-to-skin contact.': 'Yes',
+    'I want delayed cord clamping (if possible).': 'Yes',
+    'Who do you want in the delivery room?': 'Partner',
+  };
+
+  final Map<String, String> _after = {
+    'I plan to breastfeed.': 'Yes',
+    'I want my baby to stay with me.': 'Yes',
+  };
+
+  static const _yesNo = ['Yes', 'No', 'Undecided'];
+  static const _roomPeople = ['Partner', 'Family', 'Doula', 'Just me'];
+
+  Future<void> _pickValue({
+    required String title,
+    required String current,
+    required List<String> options,
+    required ValueChanged<String> onSelected,
+  }) async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: AppColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.ringPink,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.burgundy,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                for (final option in options)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      option,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: option == current
+                            ? AppColors.magenta
+                            : AppColors.textDark,
+                      ),
+                    ),
+                    trailing: option == current
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: AppColors.magenta,
+                          )
+                        : null,
+                    onTap: () => Navigator.pop(context, option),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (selected != null) onSelected(selected);
+  }
 
   void _save() {
-    final missing = _questions.length - _choices.length;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: missing == 0 ? AppColors.magenta : AppColors.textMuted,
+      const SnackBar(
+        backgroundColor: AppColors.magenta,
         behavior: SnackBarBehavior.floating,
         content: Text(
-          missing == 0
-              ? 'Birth plan saved! Share it with your care team.'
-              : 'Almost there - $missing section${missing == 1 ? '' : 's'} left to choose.',
+          'Birth plan saved! You can share it with your care team.',
         ),
+      ),
+    );
+  }
+
+  void _share() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: AppColors.burgundy,
+        behavior: SnackBarBehavior.floating,
+        content: Text('Share sheet ready — connect sharing when needed.'),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final answered = _choices.length;
-    final progress = answered / _questions.length;
-
     return Scaffold(
-      backgroundColor: AppColors.softPink,
+      backgroundColor: const Color(0xFFF7F5F8),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0xFFF7F5F8),
         elevation: 0,
         foregroundColor: AppColors.burgundy,
         centerTitle: true,
-        title: const Text(
-          'Birth Plan',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+        title: const Column(
+          children: [
+            Text(
+              'Birth Plan',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+            ),
+            SizedBox(height: 2),
+            Text(
+              'Plan your preferences and share with your doctor.',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textMuted,
+              ),
+            ),
+          ],
         ),
+        actions: [
+          TextButton(
+            onPressed: _save,
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.magenta,
+              side: const BorderSide(color: AppColors.ringPink),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              visualDensity: VisualDensity.compact,
+            ),
+            child: const Text(
+              'Save Plan',
+              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SafeArea(
-        top: false,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(18, 0, 18, 24),
+          padding: const EdgeInsets.fromLTRB(18, 8, 18, 24),
           children: [
-            const Text(
-              'Choose your preferences for the big day',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: AppColors.textMuted),
-            ),
-            const SizedBox(height: 18),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: AppColors.mistPink),
-              ),
+            const _HeroCard(),
+            const SizedBox(height: 14),
+            _SectionCard(
+              number: 1,
+              title: 'Type of Delivery',
+              icon: Icons.child_care_rounded,
               child: Row(
                 children: [
-                  Image.asset(
-                    'assets/images/birth_plan_hero.png',
-                    width: 110,
-                    height: 110,
-                    fit: BoxFit.contain,
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Your Plan',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: AppColors.textMuted,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text.rich(
-                          TextSpan(
-                            text: '$answered',
-                            style: const TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.burgundy,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: ' of ${_questions.length} chosen',
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textMuted,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: LinearProgressIndicator(
-                            value: progress,
-                            minHeight: 9,
-                            backgroundColor: AppColors.ringPink,
-                            valueColor: const AlwaysStoppedAnimation(
-                              AppColors.magenta,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          answered == _questions.length
-                              ? 'Plan complete - ready to save!'
-                              : 'Pick one option in each section',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: answered == _questions.length
-                                ? FontWeight.w700
-                                : FontWeight.w500,
-                            color: answered == _questions.length
-                                ? AppColors.magenta
-                                : AppColors.textMuted,
-                          ),
-                        ),
-                      ],
+                  for (final option in const [
+                    'Vaginal Delivery',
+                    'C-Section',
+                    'Open to Both',
+                  ]) ...[
+                    if (option != 'Vaginal Delivery') const SizedBox(width: 8),
+                    Expanded(
+                      child: _DeliveryChip(
+                        label: option,
+                        selected: _delivery == option,
+                        onTap: () => setState(() => _delivery = option),
+                      ),
                     ),
-                  ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            _SectionCard(
+              number: 2,
+              title: 'Pain Relief Preferences',
+              icon: Icons.self_improvement_rounded,
+              child: Row(
+                children: [
+                  for (final item in const [
+                    (Icons.sentiment_satisfied_alt_rounded, 'No Pain Relief'),
+                    (Icons.air_rounded, 'Breathing / Relaxation'),
+                    (Icons.medical_services_outlined, 'Epidural'),
+                    (Icons.edit_outlined, 'Other'),
+                  ]) ...[
+                    if (item.$2 != 'No Pain Relief') const SizedBox(width: 8),
+                    Expanded(
+                      child: _PainTile(
+                        icon: item.$1,
+                        label: item.$2,
+                        selected: _painRelief == item.$2,
+                        onTap: () => setState(() => _painRelief = item.$2),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            _SectionCard(
+              number: 3,
+              title: 'During Labor',
+              icon: Icons.work_outline_rounded,
+              child: Column(
+                children: [
+                  for (final entry in _labor.entries) ...[
+                    _PreferenceRow(
+                      label: entry.key,
+                      value: entry.value,
+                      onTap: () => _pickValue(
+                        title: entry.key,
+                        current: entry.value,
+                        options: _yesNo,
+                        onSelected: (value) =>
+                            setState(() => _labor[entry.key] = value),
+                      ),
+                    ),
+                    if (entry.key != _labor.keys.last)
+                      const Divider(height: 1, color: Color(0xFFF3E8ED)),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            _SectionCard(
+              number: 4,
+              title: 'During Delivery',
+              icon: Icons.favorite_outline_rounded,
+              child: Column(
+                children: [
+                  for (final entry in _deliveryPrefs.entries) ...[
+                    _PreferenceRow(
+                      label: entry.key,
+                      value: entry.value,
+                      onTap: () => _pickValue(
+                        title: entry.key,
+                        current: entry.value,
+                        options: entry.key.contains('Who do you want')
+                            ? _roomPeople
+                            : _yesNo,
+                        onSelected: (value) =>
+                            setState(() => _deliveryPrefs[entry.key] = value),
+                      ),
+                    ),
+                    if (entry.key != _deliveryPrefs.keys.last)
+                      const Divider(height: 1, color: Color(0xFFF3E8ED)),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            _SectionCard(
+              number: 5,
+              title: 'After Delivery',
+              icon: Icons.family_restroom_rounded,
+              child: Column(
+                children: [
+                  for (final entry in _after.entries) ...[
+                    _PreferenceRow(
+                      label: entry.key,
+                      value: entry.value,
+                      onTap: () => _pickValue(
+                        title: entry.key,
+                        current: entry.value,
+                        options: _yesNo,
+                        onSelected: (value) =>
+                            setState(() => _after[entry.key] = value),
+                      ),
+                    ),
+                    if (entry.key != _after.keys.last)
+                      const Divider(height: 1, color: Color(0xFFF3E8ED)),
+                  ],
                 ],
               ),
             ),
             const SizedBox(height: 14),
-            for (final question in _questions)
-              Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: AppColors.mistPink),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 34,
-                          height: 34,
-                          decoration: BoxDecoration(
-                            color: AppColors.blush,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            question.icon,
-                            size: 19,
-                            color: AppColors.magenta,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          question.title,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textDark,
-                          ),
-                        ),
-                        const Spacer(),
-                        if (_choices.containsKey(question.title))
-                          const Icon(
-                            Icons.check_circle_rounded,
-                            size: 18,
-                            color: AppColors.magenta,
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        for (final option in question.options)
-                          _OptionChip(
-                            label: option,
-                            selected: _choices[question.title] == option,
-                            onTap: () {
-                              setState(() {
-                                _choices[question.title] = option;
-                              });
-                            },
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppColors.blush,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: const Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.lightbulb_outline_rounded,
-                    size: 20,
-                    color: AppColors.magenta,
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      'Tip\nA birth plan is a wish list, not a contract. '
-                      'Discuss it with your doctor and stay flexible on the day.',
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        height: 1.5,
-                        color: AppColors.textDark,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 18),
-            SizedBox(
-              height: 50,
-              child: FilledButton.icon(
-                onPressed: _save,
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.magenta,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                icon: const Icon(Icons.save_alt_rounded),
-                label: const Text(
-                  'Save Birth Plan',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-                ),
-              ),
-            ),
+            _ShareBanner(onShare: _share),
           ],
         ),
       ),
@@ -312,8 +313,128 @@ class _PregnantBirthPlanScreenState extends State<PregnantBirthPlanScreen> {
   }
 }
 
-class _OptionChip extends StatelessWidget {
-  const _OptionChip({
+class _HeroCard extends StatelessWidget {
+  const _HeroCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.blush,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.mistPink),
+      ),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Your birth, your way.',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.burgundy,
+                  ),
+                ),
+                SizedBox(height: 6),
+                Text(
+                  'Planning ahead helps you feel empowered and prepared.',
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    height: 1.4,
+                    color: AppColors.textMuted,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Icon(
+                  Icons.favorite_rounded,
+                  color: AppColors.magenta,
+                  size: 18,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.asset(
+              'assets/images/birth_plan_hero.png',
+              width: 96,
+              height: 96,
+              fit: BoxFit.cover,
+              errorBuilder: (_, error, stackTrace) => Image.asset(
+                'assets/images/journey_pregnant.png',
+                width: 96,
+                height: 96,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionCard extends StatelessWidget {
+  const _SectionCard({
+    required this.number,
+    required this.title,
+    required this.icon,
+    required this.child,
+  });
+
+  final int number;
+  final String title;
+  final IconData icon;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.mistPink),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: AppColors.magenta, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                '$number. $title',
+                style: const TextStyle(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.burgundy,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class _DeliveryChip extends StatelessWidget {
+  const _DeliveryChip({
     required this.label,
     required this.selected,
     required this.onTap,
@@ -325,27 +446,249 @@ class _OptionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Material(
+      color: selected ? AppColors.softPink : AppColors.white,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: selected ? AppColors.magenta : AppColors.mistPink,
+              width: selected ? 1.4 : 1,
+            ),
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: selected ? AppColors.magenta : Colors.transparent,
+                  border: Border.all(
+                    color: selected ? AppColors.magenta : AppColors.skipGrey,
+                    width: selected ? 0 : 1.4,
+                  ),
+                ),
+                child: selected
+                    ? const Icon(
+                        Icons.check_rounded,
+                        size: 13,
+                        color: AppColors.white,
+                      )
+                    : null,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11,
+                  height: 1.2,
+                  fontWeight: FontWeight.w800,
+                  color: selected ? AppColors.magenta : AppColors.textDark,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PainTile extends StatelessWidget {
+  const _PainTile({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? AppColors.softPink : AppColors.white,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          height: 96,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: selected ? AppColors.magenta : AppColors.mistPink,
+              width: selected ? 1.4 : 1,
+            ),
+          ),
+          child: Stack(
+            children: [
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      icon,
+                      size: 22,
+                      color: selected ? AppColors.magenta : AppColors.textMuted,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 10,
+                        height: 1.15,
+                        fontWeight: FontWeight.w800,
+                        color: selected
+                            ? AppColors.magenta
+                            : AppColors.textDark,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (selected)
+                const Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Icon(
+                    Icons.check_circle_rounded,
+                    size: 16,
+                    color: AppColors.magenta,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PreferenceRow extends StatelessWidget {
+  const _PreferenceRow({
+    required this.label,
+    required this.value,
+    required this.onTap,
+  });
+
+  final String label;
+  final String value;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 160),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.magenta : AppColors.softPink,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: selected ? AppColors.magenta : AppColors.mistPink,
-          ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 13,
+                  height: 1.35,
+                  color: AppColors.textDark,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w800,
+                color: AppColors.magenta,
+              ),
+            ),
+            const SizedBox(width: 2),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.skipGrey,
+              size: 20,
+            ),
+          ],
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: selected ? AppColors.white : AppColors.textDark,
+      ),
+    );
+  }
+}
+
+class _ShareBanner extends StatelessWidget {
+  const _ShareBanner({required this.onShare});
+
+  final VoidCallback onShare;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.softPink,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.mistPink),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.magenta.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.health_and_safety_rounded,
+              color: AppColors.magenta,
+            ),
           ),
-        ),
+          const SizedBox(width: 10),
+          const Expanded(
+            child: Text(
+              'Share this plan with your doctor and care team so they can '
+              'support your wishes.',
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.35,
+                color: AppColors.textMuted,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          FilledButton.icon(
+            onPressed: onShare,
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.magenta,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            icon: const Icon(Icons.ios_share_rounded, size: 16),
+            label: const Text(
+              'Share Plan',
+              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+            ),
+          ),
+        ],
       ),
     );
   }
