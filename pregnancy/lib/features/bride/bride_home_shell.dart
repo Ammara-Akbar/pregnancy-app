@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import 'bride_community_screen.dart';
 import 'bride_home_screen.dart';
-import 'bride_my_plan_screen.dart';
+import 'bride_journey_screen.dart';
 import 'bride_profile_screen.dart';
 import 'bride_reports_screen.dart';
 
@@ -28,7 +28,7 @@ class _BrideHomeShellState extends State<BrideHomeShell> {
     // Matches design: Home · Journey · Tools · Community · Profile
     final pages = [
       BrideHomeScreen(userName: widget.userName),
-      BrideMyPlanScreen(onBack: () => setState(() => _index = 0)),
+      const BrideJourneyScreen(),
       const BrideReportsScreen(),
       const BrideCommunityScreen(),
       BrideProfileScreen(userName: fullName),
